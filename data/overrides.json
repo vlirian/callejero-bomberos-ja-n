@@ -1,0 +1,39 @@
+{
+  "Aldana 29-2.pdf": {
+    "fullDestination": "Aldana",
+    "truck": "BUL",
+    "notes": "Sin nota operativa detectada automáticamente.",
+    "itinerary": [
+      "Doctor Eduardo Arroyo",
+      "Colón",
+      "Plaza de la Audiencia"
+    ]
+  },
+  "Mesa 523.pdf": {
+    "fullDestination": "Mesa (San Ildefonso)",
+    "truck": "BUP/BUL",
+    "notes": "Sin nota operativa detectada automáticamente.",
+    "itinerary": [
+      "Ignacio Figueroa",
+      "Pza. de La Constitución",
+      "Bernabé",
+      "Soriano",
+      "Bernabé Soriano",
+      "Ramón y Cajal"
+    ]
+  },
+  "__extra": [
+    {
+      "street": "Calle Alegría",
+      "fullDestination": "Calle Alegría",
+      "truck": "BUP",
+      "itinerary": [
+        "Carretera de Circunvalación nº110"
+      ],
+      "notes": "Sin nota",
+      "sourcePdf": "manual::calle-alegria.pdf",
+      "mapPdf": "./calles/admin_uploads/1776188308967-Alegri_a 30.pdf",
+      "mapImage": ""
+    }
+  ]
+}
