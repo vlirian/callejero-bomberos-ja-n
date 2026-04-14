@@ -26,6 +26,9 @@ const feedbackBox = document.getElementById("feedbackBox");
 const feedbackText = document.getElementById("feedbackText");
 const feedbackSend = document.getElementById("feedbackSend");
 const feedbackMeta = document.getElementById("feedbackMeta");
+const loadingTop = document.getElementById("loadingTop");
+const loadingTopBar = document.getElementById("loadingTopBar");
+const loadingTopPct = document.getElementById("loadingTopPct");
 
 const OVERRIDES_KEY = "callejeroRouteOverridesV1";
 const ADMIN_SESSION_KEY = "callejeroAdminSessionV1";
@@ -45,6 +48,7 @@ let isAdmin = false;
 let apiAvailable = false;
 let adminPanelMode = "pending";
 let currentEntry = null;
+let loadingProgress = 0;
 const FIRE_STATION_ORIGIN = "Parque de Bomberos de Jaén";
 const INVERTED_ROAD_SUFFIX =
   /(calle|avenida|avda\.?|av\.?|plaza|paseo|carretera|camino|ronda|travesia|travesía|cuesta|glorieta|bulevar)/i;
@@ -183,6 +187,21 @@ function escapeHtml(value = "") {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
+}
+
+function setLoadingProgress(value, label = "") {
+  if (!loadingTop || !loadingTopBar || !loadingTopPct) return;
+  loadingProgress = Math.max(0, Math.min(100, Math.round(value)));
+  loadingTopBar.style.width = `${loadingProgress}%`;
+  loadingTopPct.textContent = `${loadingProgress}%${label ? ` · ${label}` : ""}`;
+}
+
+function finishLoadingProgress() {
+  if (!loadingTop || !loadingTopBar || !loadingTopPct) return;
+  setLoadingProgress(100, "Listo");
+  window.setTimeout(() => {
+    loadingTop.classList.add("done");
+  }, 260);
 }
 
 function zoneOf(entry) {
@@ -906,7 +925,9 @@ async function handleSearchInput(query) {
 }
 
 async function init() {
+  setLoadingProgress(8, "Iniciando");
   await detectApi();
+  setLoadingProgress(18, "Conectando");
 
   try {
     const idx = await fetchJson("./data/street_index.json");
@@ -914,6 +935,7 @@ async function init() {
   } catch {
     localStreetIndex = [];
   }
+  setLoadingProgress(42, "Cargando índice de calles");
 
   if (apiAvailable) {
     try {
@@ -927,10 +949,13 @@ async function init() {
     baseRoutes = await fetchJson("./data/routes.json");
     loadOverridesLocal();
   }
+  setLoadingProgress(76, "Procesando fichas");
 
   routes = applyOverrides(baseRoutes);
   rebuildRouteIndex();
+  setLoadingProgress(92, "Preparando interfaz");
   setAdminUi();
+  finishLoadingProgress();
 
   adminToggle.addEventListener("click", async () => {
     if (isAdmin) {
@@ -1276,4 +1301,5 @@ async function init() {
 init().catch(() => {
   result.classList.add("hidden");
   empty.textContent = "No se pudieron cargar las rutas.";
+  setLoadingProgress(100, "Error de carga");
 });

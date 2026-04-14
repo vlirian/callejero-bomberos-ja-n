@@ -57,6 +57,48 @@
         content: none;
       }
 
+      .loading-top {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 80;
+        background: rgba(13, 19, 23, 0.86);
+        backdrop-filter: blur(6px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+        padding: 6px 12px 8px;
+        transition: opacity 0.25s ease, transform 0.25s ease;
+      }
+
+      .loading-top.done {
+        opacity: 0;
+        transform: translateY(-100%);
+        pointer-events: none;
+      }
+
+      .loading-top-track {
+        height: 6px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.18);
+        overflow: hidden;
+      }
+
+      .loading-top-bar {
+        height: 100%;
+        width: 0;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #ffb347, #cb3d20);
+        transition: width 0.28s ease;
+      }
+
+      .loading-top-pct {
+        margin-top: 5px;
+        color: #fff;
+        font-size: 0.74rem;
+        font-weight: 700;
+        letter-spacing: 0.2px;
+      }
+
       .wrap {
         max-width: 980px;
         margin: 0 auto;
@@ -782,6 +824,12 @@
     </style>
   </head>
   <body>
+    <div id="loadingTop" class="loading-top" aria-live="polite">
+      <div class="loading-top-track">
+        <div id="loadingTopBar" class="loading-top-bar"></div>
+      </div>
+      <div id="loadingTopPct" class="loading-top-pct">0% · Iniciando</div>
+    </div>
     <main class="wrap">
       <section class="hero">
         <div class="hero-top">
