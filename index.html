@@ -232,6 +232,52 @@
         display: flex;
       }
 
+      .review-panel {
+        margin-top: 12px;
+        border: 1px solid #eadfcd;
+        border-radius: 14px;
+        background: var(--card-solid);
+        box-shadow: var(--shadow-soft);
+        padding: 12px;
+      }
+
+      .review-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+
+      .review-title {
+        font-weight: 800;
+      }
+
+      .review-street {
+        font-size: 1.05rem;
+        font-weight: 800;
+        margin: 2px 0 8px;
+      }
+
+      .review-grid {
+        display: grid;
+        gap: 8px;
+      }
+
+      .review-grid textarea {
+        min-height: 80px;
+        resize: vertical;
+      }
+
+      .review-feedback {
+        margin-top: 8px;
+        padding: 10px;
+        border-radius: 10px;
+        background: #fff6ea;
+        border: 1px solid #efd8b3;
+        font-size: 0.92rem;
+      }
+
       .admin-panel {
         display: none;
         margin-top: 12px;
@@ -772,6 +818,11 @@
           flex-wrap: wrap;
         }
 
+        .review-head {
+          flex-wrap: wrap;
+          align-items: flex-start;
+        }
+
         input {
           font-size: 1rem;
           padding: 12px 12px 12px 40px;
@@ -867,6 +918,25 @@
           />
         </div>
         <ul id="suggestions" class="suggestions hidden" aria-label="Sugerencias de calles"></ul>
+        <section id="reviewPanel" class="review-panel">
+          <div class="review-head">
+            <div class="review-title">Modo repaso</div>
+            <button id="reviewStart" class="btn btn-ghost" type="button">Nueva calle</button>
+          </div>
+          <div id="reviewStreet" class="review-street">Pulsa “Nueva calle” para empezar.</div>
+          <div class="review-grid">
+            <label>Camión
+              <input id="reviewTruckInput" type="text" placeholder="Ejemplo: BUP / BUL" />
+            </label>
+            <label>Itinerario (una calle por línea)
+              <textarea id="reviewItineraryInput" placeholder="Escribe aquí el itinerario que recuerdes..."></textarea>
+            </label>
+            <div class="result-actions">
+              <button id="reviewCheck" class="btn btn-primary" type="button">Comprobar</button>
+            </div>
+          </div>
+          <div id="reviewFeedback" class="review-feedback">Cuando compruebes, se mostrará la solución real.</div>
+        </section>
       </section>
 
       <section id="result" class="result hidden" aria-live="polite"></section>

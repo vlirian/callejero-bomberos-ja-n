@@ -26,6 +26,13 @@ const feedbackBox = document.getElementById("feedbackBox");
 const feedbackText = document.getElementById("feedbackText");
 const feedbackSend = document.getElementById("feedbackSend");
 const feedbackMeta = document.getElementById("feedbackMeta");
+const reviewPanel = document.getElementById("reviewPanel");
+const reviewStart = document.getElementById("reviewStart");
+const reviewStreet = document.getElementById("reviewStreet");
+const reviewTruckInput = document.getElementById("reviewTruckInput");
+const reviewItineraryInput = document.getElementById("reviewItineraryInput");
+const reviewCheck = document.getElementById("reviewCheck");
+const reviewFeedback = document.getElementById("reviewFeedback");
 const loadingTop = document.getElementById("loadingTop");
 const loadingTopBar = document.getElementById("loadingTopBar");
 const loadingTopPct = document.getElementById("loadingTopPct");
@@ -49,6 +56,8 @@ let apiAvailable = false;
 let adminPanelMode = "pending";
 let currentEntry = null;
 let loadingProgress = 0;
+let reviewCurrentStreet = "";
+let reviewCurrentEntry = null;
 const FIRE_STATION_ORIGIN = "Parque de Bomberos de Jaén";
 const INVERTED_ROAD_SUFFIX =
   /(calle|avenida|avda\.?|av\.?|plaza|paseo|carretera|camino|ronda|travesia|travesía|cuesta|glorieta|bulevar)/i;
@@ -202,6 +211,61 @@ function finishLoadingProgress() {
   window.setTimeout(() => {
     loadingTop.classList.add("done");
   }, 260);
+}
+
+function buildReviewPool() {
+  const seen = new Set();
+  const out = [];
+  for (const entry of routes) {
+    const street = canonicalStreetName(entry.street || entry.fullDestination || "");
+    const key = normalizeText(street);
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    out.push({ street, entry });
+  }
+  for (const street of localStreetIndex) {
+    const canonical = canonicalStreetName(street);
+    const key = normalizeText(canonical);
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    out.push({ street: canonical, entry: findRouteEntryByStreetName(canonical) });
+  }
+  return out;
+}
+
+function startReviewModeRound() {
+  const pool = buildReviewPool();
+  if (!pool.length) {
+    reviewFeedback.textContent = "No hay calles cargadas para repaso.";
+    return;
+  }
+  const pick = pool[Math.floor(Math.random() * pool.length)];
+  reviewCurrentStreet = pick.street;
+  reviewCurrentEntry = pick.entry || null;
+  reviewStreet.textContent = `Calle: ${reviewCurrentStreet}`;
+  reviewTruckInput.value = "";
+  reviewItineraryInput.value = "";
+  reviewFeedback.textContent = "Escribe camión e itinerario y pulsa comprobar.";
+}
+
+function normalizeTruckGuess(value = "") {
+  return normalizeText(value).replace(/\s+/g, "").replace("bul/bup", "bup/bul");
+}
+
+function parseItineraryLines(value = "") {
+  return String(value)
+    .split("\n")
+    .map((x) => canonicalStreetName(x.replace(/^\d+\.\s*/, "").trim()))
+    .filter(Boolean);
+}
+
+function scoreItinerary(guess, real) {
+  if (!real.length) return 0;
+  const gset = new Set(guess.map((x) => normalizeText(x)));
+  const rset = new Set(real.map((x) => normalizeText(x)));
+  let hit = 0;
+  for (const item of gset) if (rset.has(item)) hit += 1;
+  return Math.round((hit / rset.size) * 100);
 }
 
 function zoneOf(entry) {
@@ -956,6 +1020,30 @@ async function init() {
   setLoadingProgress(92, "Preparando interfaz");
   setAdminUi();
   finishLoadingProgress();
+
+  reviewStart.addEventListener("click", () => {
+    startReviewModeRound();
+  });
+
+  reviewCheck.addEventListener("click", () => {
+    if (!reviewCurrentStreet) {
+      reviewFeedback.textContent = "Primero pulsa “Nueva calle”.";
+      return;
+    }
+    const guessedTruck = normalizeTruckGuess(reviewTruckInput.value);
+    const guessedItin = parseItineraryLines(reviewItineraryInput.value);
+    if (reviewCurrentEntry) {
+      const realTruck = normalizeTruckGuess(reviewCurrentEntry.truck || "No indicado");
+      const realItin = (reviewCurrentEntry.itinerary || []).map((x) => canonicalStreetName(x));
+      const truckOk = guessedTruck && guessedTruck === realTruck;
+      const itinScore = scoreItinerary(guessedItin, realItin);
+      reviewFeedback.textContent = `Camión: ${truckOk ? "correcto" : "revisar"} · Itinerario: ${itinScore}% de acierto. Mostrando ficha real.`;
+      renderMatch(reviewCurrentEntry);
+      return;
+    }
+    reviewFeedback.textContent = "No hay ficha para esta calle. Mostrando ruta en Google Maps.";
+    renderMapOnlyStreet(reviewCurrentStreet);
+  });
 
   adminToggle.addEventListener("click", async () => {
     if (isAdmin) {
