@@ -8,6 +8,7 @@ const mapModalImage = document.getElementById("mapModalImage");
 const mapModalClose = document.getElementById("mapModalClose");
 const mapModalTitle = document.getElementById("mapModalTitle");
 const adminToggle = document.getElementById("adminToggle");
+const reviewToggle = document.getElementById("reviewToggle");
 const adminState = document.getElementById("adminState");
 const adminTools = document.getElementById("adminTools");
 const pendingToggle = document.getElementById("pendingToggle");
@@ -1020,6 +1021,10 @@ async function init() {
   setLoadingProgress(92, "Preparando interfaz");
   setAdminUi();
   finishLoadingProgress();
+
+  reviewToggle.addEventListener("click", () => {
+    reviewPanel.classList.toggle("open");
+  });
 
   reviewStart.addEventListener("click", () => {
     startReviewModeRound();

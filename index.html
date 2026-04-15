@@ -233,12 +233,17 @@
       }
 
       .review-panel {
+        display: none;
         margin-top: 12px;
         border: 1px solid #eadfcd;
         border-radius: 14px;
         background: var(--card-solid);
         box-shadow: var(--shadow-soft);
         padding: 12px;
+      }
+
+      .review-panel.open {
+        display: block;
       }
 
       .review-head {
@@ -660,27 +665,45 @@
       .btn {
         border: 0;
         border-radius: 11px;
-        padding: 8px 12px;
+        padding: 9px 14px;
         font: inherit;
         font-weight: 800;
         cursor: pointer;
-        transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+        letter-spacing: 0.15px;
+        transition: transform 0.14s ease, box-shadow 0.14s ease, filter 0.14s ease, background 0.14s ease;
       }
 
       .btn:hover {
-        transform: translateY(-1px);
+        transform: translateY(-1px) scale(1.01);
         filter: brightness(1.02);
+      }
+
+      .btn:active {
+        transform: translateY(0) scale(0.995);
+      }
+
+      .btn:focus-visible {
+        outline: 3px solid rgba(255, 196, 117, 0.55);
+        outline-offset: 2px;
       }
 
       .btn-primary {
         color: #fff;
-        background: linear-gradient(120deg, var(--accent), #de4e1f);
-        box-shadow: 0 10px 18px rgba(203, 61, 32, 0.24);
+        background: linear-gradient(120deg, #c83d1e, #e7632f 52%, #f28b3c);
+        box-shadow: 0 10px 18px rgba(203, 61, 32, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.28);
       }
 
       .btn-ghost {
         color: var(--ink);
-        background: #efe7d8;
+        background: linear-gradient(180deg, #f5eee2, #e9decb);
+        border: 1px solid #dac9af;
+        box-shadow: 0 5px 12px rgba(23, 33, 38, 0.08);
+      }
+
+      .btn-review {
+        color: #fff;
+        background: linear-gradient(120deg, #1f4857, #2f6f86);
+        box-shadow: 0 10px 18px rgba(24, 67, 83, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.2);
       }
 
       .edit-form {
@@ -894,7 +917,10 @@
 
       <section class="search-box">
         <div class="search-top">
-          <span id="adminState" class="admin-state">Modo lectura</span>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+            <span id="adminState" class="admin-state">Modo lectura</span>
+            <button id="reviewToggle" class="btn btn-review" type="button">Modo repaso</button>
+          </div>
           <button id="adminToggle" class="btn btn-ghost" type="button">Acceso admin</button>
         </div>
         <div id="adminTools" class="admin-tools">
