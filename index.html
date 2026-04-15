@@ -208,18 +208,24 @@
         margin-bottom: 10px;
       }
 
-      .admin-state {
-        font-size: 0.82rem;
-        font-weight: 800;
-        letter-spacing: 0.2px;
-        padding: 6px 11px;
-        border-radius: 999px;
-        background: #efe6d6;
+      .mode-switch {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
       }
 
-      .admin-state.on {
-        background: #dff7e7;
-        color: #0f6c3e;
+      .mode-toggle {
+        color: #fff;
+        background: linear-gradient(120deg, #1f4857, #2f6f86);
+        box-shadow: none;
+        opacity: 0.9;
+      }
+
+      .mode-toggle.is-active {
+        opacity: 1;
+        box-shadow: 0 12px 22px rgba(24, 67, 83, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.24);
+        transform: translateY(-1px);
       }
 
       .admin-tools {
@@ -247,15 +253,13 @@
       }
 
       .review-head {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 8px;
+        display: block;
+        margin-bottom: 10px;
       }
 
       .review-title {
         font-weight: 800;
+        margin-bottom: 8px;
       }
 
       .review-street {
@@ -274,8 +278,7 @@
         font-size: 0.96rem;
       }
 
-      .review-grid input,
-      .review-grid textarea {
+      .review-grid input {
         width: 100%;
         margin-top: 6px;
         border: 1px solid #d8c9b3;
@@ -288,29 +291,44 @@
         transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
       }
 
-      .review-grid input:focus,
-      .review-grid textarea:focus {
+      .review-grid input:focus {
         outline: none;
         border-color: #cc4b22;
         box-shadow: 0 0 0 4px rgba(204, 75, 34, 0.15);
         transform: translateY(-1px);
       }
 
-      .review-grid textarea {
-        min-height: 180px;
-        line-height: 1.55;
+      .review-itinerary-lines {
+        display: grid;
+        gap: 8px;
+      }
+
+      .review-line-row {
+        display: grid;
+        grid-template-columns: 34px minmax(0, 1fr);
+        align-items: center;
+        gap: 8px;
+      }
+
+      .review-line-no {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        background: #fff1e2;
+        border: 1px solid #f1ccad;
+        font-size: 0.86rem;
+        font-weight: 800;
+        color: #8f3b1e;
+      }
+
+      .review-line-input {
+        margin-top: 0 !important;
+        padding: 10px 12px;
+        border-radius: 12px;
         font-weight: 600;
-        resize: vertical;
-        background:
-          linear-gradient(180deg, #fffdf9, #fff8ef),
-          repeating-linear-gradient(
-            to bottom,
-            transparent 0,
-            transparent 30px,
-            rgba(203, 61, 32, 0.12) 31px
-          );
-        background-blend-mode: normal;
-        white-space: pre-wrap;
       }
 
       #adminToggle,
@@ -328,10 +346,10 @@
       }
 
       #reviewStart {
-        color: #fff;
-        background: linear-gradient(120deg, #cb3d20, #e76430);
-        border: 1px solid rgba(255, 255, 255, 0.28);
-        box-shadow: 0 8px 16px rgba(203, 61, 32, 0.26);
+        color: #2f3a41;
+        background: #efe8da;
+        border: 1px solid #d9c7ad;
+        box-shadow: none;
       }
 
       #reviewCheck {
@@ -339,8 +357,15 @@
         border-radius: 14px;
       }
 
+      #reviewAddLine {
+        color: #2f3a41;
+        background: #f1eadc;
+        border: 1px solid #d9c7ad;
+        box-shadow: none;
+      }
+
       #reviewTruckInput::placeholder,
-      #reviewItineraryInput::placeholder {
+      .review-line-input::placeholder {
         color: #6c6f73;
         font-weight: 600;
       }
@@ -609,6 +634,23 @@
         display: none;
       }
 
+      .truck-banner {
+        margin-top: 16px;
+        background: linear-gradient(120deg, #cc3f20, #e45a2c);
+        color: #fff;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 10px 20px rgba(203, 61, 32, 0.28);
+        padding: 14px 18px;
+        font-size: clamp(1.2rem, 2.1vw, 1.55rem);
+        font-weight: 800;
+        letter-spacing: 0.2px;
+      }
+
+      .truck-banner.hidden {
+        display: none;
+      }
+
       .chip {
         display: inline-block;
         background: linear-gradient(120deg, var(--accent), #e45a2c);
@@ -787,12 +829,6 @@
         box-shadow: 0 5px 12px rgba(23, 33, 38, 0.08);
       }
 
-      .btn-review {
-        color: #fff;
-        background: linear-gradient(120deg, #1f4857, #2f6f86);
-        box-shadow: 0 10px 18px rgba(24, 67, 83, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-      }
-
       .edit-form {
         margin-top: 12px;
         display: grid;
@@ -850,9 +886,84 @@
         margin: 0 0 10px;
       }
 
+      .maps-split {
+        display: grid;
+        grid-template-rows: minmax(300px, 44vh) minmax(260px, 36vh);
+        gap: 10px;
+      }
+
+      .maps-top {
+        border-radius: 12px;
+        overflow: hidden;
+        background: #0e0f12;
+      }
+
+      .streetview-frame {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        background: #111;
+      }
+
+      .step-overlay {
+        width: 100%;
+        margin: 0 0 10px;
+        background: rgba(0, 0, 0, 0.78);
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        border-radius: 16px;
+        padding: 12px 14px;
+        box-shadow: 0 14px 32px rgba(0, 0, 0, 0.42);
+      }
+
+      .step-overlay.hidden {
+        display: none;
+      }
+
+      .step-kicker {
+        font-size: 0.98rem;
+        font-weight: 800;
+        margin-bottom: 6px;
+      }
+
+      .step-text {
+        font-size: 1.06rem;
+        font-weight: 500;
+        line-height: 1.3;
+      }
+
+      .street-step-name {
+        color: #d71920;
+        font-weight: 900;
+      }
+
+      .step-distance {
+        margin-top: 5px;
+        font-size: 0.95rem;
+        opacity: 0.9;
+      }
+
+      .step-actions {
+        margin-top: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .step-btn {
+        border: 1px solid rgba(117, 228, 255, 0.45);
+        color: #75e4ff;
+        background: rgba(8, 20, 26, 0.86);
+        border-radius: 999px;
+        padding: 8px 13px;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
       .maps-frame {
         width: 100%;
-        height: min(56vh, 520px);
+        height: 100%;
         border: 0;
         border-radius: 12px;
         background: #fff;
@@ -864,6 +975,97 @@
 
       .maps-alt.hidden {
         display: none;
+      }
+
+      .maps-steps {
+        margin: 0 0 12px;
+        border: 1px solid #e7d3b4;
+        border-radius: 16px;
+        background:
+          linear-gradient(180deg, rgba(255, 251, 244, 0.96), rgba(255, 246, 232, 0.94)),
+          repeating-linear-gradient(
+            -45deg,
+            rgba(214, 96, 48, 0.035) 0,
+            rgba(214, 96, 48, 0.035) 10px,
+            rgba(255, 255, 255, 0.03) 10px,
+            rgba(255, 255, 255, 0.03) 20px
+          );
+        padding: 14px 14px 12px;
+        box-shadow: 0 10px 24px rgba(39, 28, 12, 0.1);
+      }
+
+      .maps-steps.hidden {
+        display: none;
+      }
+
+      .maps-steps h4 {
+        margin: 0 0 8px;
+        font-size: 1.22rem;
+        letter-spacing: 0.2px;
+      }
+
+      .maps-steps ol {
+        margin: 10px 0 0;
+        padding-left: 24px;
+      }
+
+      .maps-steps li {
+        margin: 8px 0;
+        line-height: 1.42;
+        font-weight: 500;
+        padding: 4px 0;
+        border-bottom: 1px dashed rgba(188, 142, 95, 0.35);
+      }
+
+      .maps-steps li:last-child {
+        border-bottom: 0;
+      }
+
+      .destination-photo {
+        margin: 0 0 12px;
+        border: 1px solid #e4d5bf;
+        border-radius: 14px;
+        background: #fff;
+        padding: 10px;
+        box-shadow: 0 8px 18px rgba(26, 22, 14, 0.08);
+      }
+
+      .destination-photo.hidden {
+        display: none;
+      }
+
+      .destination-photo h4 {
+        margin: 0 0 8px;
+        font-size: 1.02rem;
+      }
+
+      .destination-photo img {
+        width: 100%;
+        border-radius: 10px;
+        display: block;
+        border: 1px solid #e7d8c2;
+        background: #f2f2f2;
+      }
+
+      .destination-photo-frame {
+        width: 100%;
+        height: min(40vh, 340px);
+        border: 1px solid #e7d8c2;
+        border-radius: 10px;
+        background: #f2f2f2;
+      }
+
+      .width-estimate {
+        margin-top: 8px;
+        border: 1px solid #ecd8b8;
+        border-radius: 10px;
+        background: #fff8ec;
+        padding: 8px 10px;
+      }
+
+      .width-estimate strong {
+        display: block;
+        margin-bottom: 3px;
       }
 
       .maps-alt-list {
@@ -939,10 +1141,6 @@
           padding: 6px 10px;
         }
 
-        .review-grid textarea {
-          min-height: 150px;
-        }
-
         input {
           font-size: 1rem;
           padding: 12px 12px 12px 40px;
@@ -969,9 +1167,13 @@
         }
 
         .maps-frame {
-          height: 44vh;
+          height: 100%;
           min-height: 320px;
           border-radius: 10px;
+        }
+
+        .maps-split {
+          grid-template-rows: minmax(260px, 42vh) minmax(240px, 34vh);
         }
 
         .map-modal {
@@ -1014,9 +1216,9 @@
 
       <section class="search-box">
         <div class="search-top">
-          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-            <span id="adminState" class="admin-state">Modo lectura</span>
-            <button id="reviewToggle" class="btn btn-review" type="button">Modo repaso</button>
+          <div class="mode-switch">
+            <button id="consultToggle" class="btn mode-toggle is-active" type="button">Modo consulta</button>
+            <button id="reviewToggle" class="btn mode-toggle" type="button">Modo repaso</button>
           </div>
           <button id="adminToggle" class="btn btn-ghost" type="button">Acceso admin</button>
         </div>
@@ -1031,7 +1233,7 @@
           </div>
           <div id="adminList" class="admin-list"></div>
         </section>
-        <div class="street-field">
+        <div id="streetFieldWrap" class="street-field">
           <span class="street-icon">⌕</span>
           <input
             id="streetInput"
@@ -1044,17 +1246,22 @@
         <section id="reviewPanel" class="review-panel">
           <div class="review-head">
             <div class="review-title">Modo repaso</div>
-            <button id="reviewStart" class="btn btn-ghost" type="button">Nueva calle</button>
+            <button id="reviewStart" class="btn" type="button">Nueva calle</button>
           </div>
-          <div id="reviewStreet" class="review-street">Pulsa “Nueva calle” para empezar.</div>
+          <div id="reviewStreet" class="review-street"></div>
           <div class="review-grid">
             <label>Camión
               <input id="reviewTruckInput" type="text" placeholder="Ejemplo: BUP / BUL" />
             </label>
             <label>Itinerario (una calle por línea)
-              <textarea id="reviewItineraryInput" placeholder="Escribe aquí el itinerario que recuerdes..."></textarea>
+              <div id="reviewItineraryLines" class="review-itinerary-lines">
+                <div class="review-line-row"><span class="review-line-no">1</span><input class="review-line-input" data-line-index="0" type="text" placeholder="Calle 1" /></div>
+                <div class="review-line-row"><span class="review-line-no">2</span><input class="review-line-input" data-line-index="1" type="text" placeholder="Calle 2" /></div>
+                <div class="review-line-row"><span class="review-line-no">3</span><input class="review-line-input" data-line-index="2" type="text" placeholder="Calle 3" /></div>
+              </div>
             </label>
             <div class="result-actions">
+              <button id="reviewAddLine" class="btn" type="button">Añadir calle</button>
               <button id="reviewCheck" class="btn btn-primary" type="button">Comprobar</button>
             </div>
           </div>
@@ -1062,10 +1269,40 @@
         </section>
       </section>
 
-      <section id="result" class="result hidden" aria-live="polite"></section>
+      <section id="truckBanner" class="truck-banner hidden" aria-live="polite"></section>
       <section id="mapsAnnex" class="maps-annex hidden">
         <h3 id="mapsTitle">Ruta en Google Maps</h3>
-        <iframe id="mapsFrame" class="maps-frame" loading="lazy" title="Ruta en Google Maps"></iframe>
+        <div id="mapsSteps" class="maps-steps hidden">
+          <h4>Indicaciones del recorrido:</h4>
+          <div id="mapsStepsMeta" class="muted">Ruta activa (más rápida ahora)</div>
+          <ol id="mapsStepsList"></ol>
+        </div>
+        <div id="destinationPhotoWrap" class="destination-photo hidden">
+          <h4>Foto de calle destino (Street View)</h4>
+          <iframe id="destinationPhotoFrame" class="destination-photo-frame" title="Foto Street View del destino" loading="lazy"></iframe>
+          <div id="widthEstimate" class="width-estimate hidden">
+            <strong id="widthEstimateValue">Ancho estimado de vía: -</strong>
+            <div id="widthEstimateNote" class="muted">Estimación orientativa, no medición oficial.</div>
+          </div>
+          <div id="destinationPhotoMeta" class="muted"></div>
+        </div>
+        <div id="stepOverlay" class="step-overlay hidden">
+          <div id="stepKicker" class="step-kicker">Paso 1 de 1</div>
+          <div id="stepText" class="step-text">Cargando paso...</div>
+          <div id="stepDistance" class="step-distance"></div>
+          <div class="step-actions">
+            <button id="stepStartBtn" class="step-btn" type="button">Saltar al principio</button>
+            <button id="stepPrevBtn" class="step-btn" type="button">Paso anterior</button>
+            <button id="stepNextBtn" class="step-btn" type="button">Paso siguiente</button>
+            <button id="stepEndBtn" class="step-btn" type="button">Saltar al final</button>
+          </div>
+        </div>
+        <div class="maps-split">
+          <div class="maps-top">
+            <iframe id="streetViewFrame" class="streetview-frame" loading="lazy" title="Street View del paso"></iframe>
+          </div>
+          <iframe id="mapsFrame" class="maps-frame" loading="lazy" title="Ruta en Google Maps"></iframe>
+        </div>
         <div id="mapsAlt" class="maps-alt hidden">
           <strong>Alternativas en Jaén:</strong>
           <div id="mapsAltList" class="maps-alt-list"></div>
@@ -1074,6 +1311,7 @@
           <a id="mapsOpen" class="btn btn-ghost" target="_blank" rel="noreferrer">Abrir en Google Maps</a>
         </div>
       </section>
+      <section id="result" class="result hidden" aria-live="polite"></section>
       <section id="feedbackBox" class="feedback-box">
         <h3>Enviar corrección</h3>
         <textarea id="feedbackText" placeholder="Escribe aquí la corrección o comentario operativo..."></textarea>

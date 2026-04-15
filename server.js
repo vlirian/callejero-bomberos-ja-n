@@ -209,6 +209,12 @@ function getJson(url, headers = {}) {
 }
 
 async function geocodeOne(place) {
+  const coordMatch = String(place || '')
+    .trim()
+    .match(/^(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)$/);
+  if (coordMatch) {
+    return { lat: Number(coordMatch[1]), lon: Number(coordMatch[2]) };
+  }
   const key = normalizeText(place);
   const cached = geocodeCache.get(key);
   if (cached && Date.now() - cached.ts < 24 * 60 * 60 * 1000) return cached.value;
@@ -252,24 +258,54 @@ async function computeRouteStreetSteps(originQueries, destinationQueries) {
   const rawSteps = legs.flatMap((leg) => (Array.isArray(leg.steps) ? leg.steps : []));
   const names = [];
   const seen = new Set();
+  const stepsDetailed = [];
   for (const step of rawSteps) {
     const name = canonicalStreetName(String(step.name || '').trim());
     const key = normalizeText(name);
     if (!key || seen.has(key)) continue;
     seen.add(key);
     names.push(name);
+    const distanceMeters = Number(step && step.distance ? step.distance : 0);
+    stepsDetailed.push({
+      instruction: name ? `Continúa por ${name}` : 'Continúa recto',
+      distanceText: distanceMeters ? `${Math.round(distanceMeters)} m` : '',
+      street: name || '',
+      lat: step && step.maneuver && Array.isArray(step.maneuver.location) ? Number(step.maneuver.location[1]) : null,
+      lng: step && step.maneuver && Array.isArray(step.maneuver.location) ? Number(step.maneuver.location[0]) : null,
+      endLat: null,
+      endLng: null,
+      maneuver: String(step && step.maneuver && step.maneuver.type ? step.maneuver.type : ''),
+    });
   }
-  return names;
+  const trimmed = trimOperationalPrefix(names);
+  const instructions = trimmed.map((name) => `Continúa por ${name}`);
+  return { streets: trimmed, instructions, stepsDetailed };
 }
 
 function stripHtml(value = '') {
   return String(value).replace(/<[^>]*>/g, ' ').replace(/\s{2,}/g, ' ').trim();
 }
 
+function trimOperationalPrefix(streets) {
+  const list = Array.isArray(streets) ? streets.filter(Boolean) : [];
+  if (!list.length) return list;
+  const keys = list.map((s) => normalizeText(s));
+  const startIdx = keys.findIndex(
+    (k) =>
+      k.includes('avenida de andalucia') ||
+      k.includes('av de andalucia') ||
+      k.includes('avda de andalucia') ||
+      k.includes('carretera de cordoba') ||
+      k.includes('ctra de cordoba')
+  );
+  return startIdx > 0 ? list.slice(startIdx) : list;
+}
+
 function extractRoadNamesFromGoogleStep(step) {
+  const directName = canonicalStreetName(String(step && step.name ? step.name : '').trim());
   const html = String(step && step.html_instructions ? step.html_instructions : '');
   const boldParts = [...html.matchAll(/<b>(.*?)<\/b>/gi)].map((m) => stripHtml(m[1]));
-  const parts = boldParts.length ? boldParts : [stripHtml(html)];
+  const parts = [directName, ...(boldParts.length ? boldParts : [stripHtml(html)])].filter(Boolean);
   const roadLike =
     /^(c\.|calle|av\.|avda\.|avenida|plaza|paseo|carretera|camino|ronda|traves[ií]a|cuesta|glorieta|autov[ií]a|n-|a-)/i;
   const banned =
@@ -287,7 +323,7 @@ async function computeGoogleRouteStreetSteps(originQuery, destinationQuery) {
   const origin = originQuery;
   const url =
     `https://maps.googleapis.com/maps/api/directions/json?origin=${encodeURIComponent(origin)}` +
-    `&destination=${encodeURIComponent(destinationQuery)}&alternatives=false&mode=driving&language=es&region=es&key=${encodeURIComponent(
+    `&destination=${encodeURIComponent(destinationQuery)}&alternatives=true&departure_time=now&mode=driving&language=es&region=es&key=${encodeURIComponent(
       GOOGLE_MAPS_API_KEY
     )}`;
   const data = await getJson(url);
@@ -295,11 +331,37 @@ async function computeGoogleRouteStreetSteps(originQuery, destinationQuery) {
     throw new Error(`google_directions_${String(data.status || 'error').toLowerCase()}`);
   }
   const routes = Array.isArray(data.routes) ? data.routes : [];
-  const legs = routes[0] && Array.isArray(routes[0].legs) ? routes[0].legs : [];
+  const bestRoute =
+    routes
+      .map((route) => {
+        const legs = Array.isArray(route.legs) ? route.legs : [];
+        const total = legs.reduce(
+          (acc, leg) => acc + Number((leg && leg.duration_in_traffic && leg.duration_in_traffic.value) || (leg && leg.duration && leg.duration.value) || 0),
+          0
+        );
+        return { route, total };
+      })
+      .sort((a, b) => a.total - b.total)[0]?.route || routes[0] || null;
+  const legs = bestRoute && Array.isArray(bestRoute.legs) ? bestRoute.legs : [];
   const steps = legs.flatMap((leg) => (Array.isArray(leg.steps) ? leg.steps : []));
   const out = [];
   const seen = new Set();
+  const instructions = [];
+  const stepsDetailed = [];
   for (const step of steps) {
+    const stepInstruction = stripHtml(step && step.html_instructions ? step.html_instructions : '');
+    if (stepInstruction) instructions.push(stepInstruction);
+    const stepStreet = canonicalStreetName(String(step && step.name ? step.name : '').trim());
+    stepsDetailed.push({
+      instruction: stepInstruction || (stepStreet ? `Continúa por ${stepStreet}` : 'Continúa'),
+      distanceText: String((step && step.distance && step.distance.text) || ''),
+      street: stepStreet,
+      lat: step && step.start_location ? Number(step.start_location.lat) : null,
+      lng: step && step.start_location ? Number(step.start_location.lng) : null,
+      endLat: step && step.end_location ? Number(step.end_location.lat) : null,
+      endLng: step && step.end_location ? Number(step.end_location.lng) : null,
+      maneuver: String(step && step.maneuver ? step.maneuver : ''),
+    });
     for (const name of extractRoadNamesFromGoogleStep(step)) {
       const key = normalizeText(name);
       if (!key || seen.has(key)) continue;
@@ -307,7 +369,8 @@ async function computeGoogleRouteStreetSteps(originQuery, destinationQuery) {
       out.push(name);
     }
   }
-  return out;
+  const trimmed = trimOperationalPrefix(out);
+  return { streets: trimmed, instructions, stepsDetailed };
 }
 
 function localStreetIndexCandidates(query) {
@@ -363,6 +426,28 @@ function verifyPassword(password) {
 function json(res, code, body, headers = {}) {
   res.writeHead(code, { 'Content-Type': 'application/json; charset=utf-8', ...headers });
   res.end(JSON.stringify(body));
+}
+
+function proxyBinary(url, res) {
+  return new Promise((resolve, reject) => {
+    const req = https.get(url, (upstream) => {
+      const status = upstream.statusCode || 502;
+      if (status < 200 || status >= 300) {
+        upstream.resume();
+        reject(new Error(`upstream_${status}`));
+        return;
+      }
+      const contentType = upstream.headers['content-type'] || 'image/jpeg';
+      res.writeHead(200, {
+        'Content-Type': contentType,
+        'Cache-Control': 'public, max-age=86400',
+      });
+      upstream.pipe(res);
+      upstream.on('end', resolve);
+    });
+    req.on('error', reject);
+    req.setTimeout(8000, () => req.destroy(new Error('timeout')));
+  });
 }
 
 function readJson(file, fallback) {
@@ -514,27 +599,61 @@ const server = http.createServer(async (req, res) => {
     }
     const originQueries = originRaw
       ? [originRaw, `${originRaw}, Jaén capital, 23000, España`, `${originRaw}, Jaén, España`]
-      : ['Parque de Bomberos de Jaén, Jaén capital, 23000, España', 'Parque de Bomberos de Jaén, Jaén, España'];
+      : ['37.778523,-3.811482'];
     const destinationQueries = [`${to}, Jaén capital, 23000, España`, `${to}, Jaén, España`, `${to}`];
     try {
       // Preferimos Google Directions si hay API key; fallback a OSRM.
-      const streets = await computeGoogleRouteStreetSteps(originQueries[0], destinationQueries[0]);
-      if (streets.length) {
-        return json(res, 200, { ok: true, streets, source: 'google' });
+      const routeInfo = await computeGoogleRouteStreetSteps(originQueries[0], destinationQueries[0]);
+      if (routeInfo.streets.length || routeInfo.instructions.length) {
+        return json(res, 200, {
+          ok: true,
+          streets: routeInfo.streets,
+          instructions: routeInfo.instructions,
+          stepsDetailed: routeInfo.stepsDetailed || [],
+          source: 'google',
+        });
       }
       throw new Error('google_empty_steps');
     } catch (googleErr) {
       try {
-        const streets = await computeRouteStreetSteps(originQueries, destinationQueries);
-        return json(res, 200, { ok: true, streets, source: 'osrm' });
+        const routeInfo = await computeRouteStreetSteps(originQueries, destinationQueries);
+        return json(res, 200, {
+          ok: true,
+          streets: routeInfo.streets,
+          instructions: routeInfo.instructions,
+          stepsDetailed: routeInfo.stepsDetailed || [],
+          source: 'osrm',
+        });
       } catch (err) {
         return json(res, 200, {
           ok: false,
           streets: [],
+          instructions: [],
+          stepsDetailed: [],
           error: String(err && err.message ? err.message : err),
           googleError: String(googleErr && googleErr.message ? googleErr.message : googleErr),
         });
       }
+    }
+  }
+
+  if (url === '/api/streetview-photo' && req.method === 'GET') {
+    const lat = Number(parsedUrl.searchParams.get('lat'));
+    const lng = Number(parsedUrl.searchParams.get('lng'));
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+      return json(res, 400, { ok: false, error: 'coordenadas_invalidas' });
+    }
+    if (!GOOGLE_MAPS_API_KEY) {
+      return json(res, 503, { ok: false, error: 'google_api_key_missing' });
+    }
+    const photoUrl =
+      `https://maps.googleapis.com/maps/api/streetview?size=1200x700&location=${encodeURIComponent(`${lat},${lng}`)}` +
+      `&fov=80&heading=0&pitch=0&key=${encodeURIComponent(GOOGLE_MAPS_API_KEY)}`;
+    try {
+      await proxyBinary(photoUrl, res);
+      return;
+    } catch (err) {
+      return json(res, 502, { ok: false, error: String(err && err.message ? err.message : err) });
     }
   }
 

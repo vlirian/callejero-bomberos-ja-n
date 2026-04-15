@@ -8,8 +8,8 @@ const mapModalImage = document.getElementById("mapModalImage");
 const mapModalClose = document.getElementById("mapModalClose");
 const mapModalTitle = document.getElementById("mapModalTitle");
 const adminToggle = document.getElementById("adminToggle");
+const consultToggle = document.getElementById("consultToggle");
 const reviewToggle = document.getElementById("reviewToggle");
-const adminState = document.getElementById("adminState");
 const adminTools = document.getElementById("adminTools");
 const pendingToggle = document.getElementById("pendingToggle");
 const feedbackToggle = document.getElementById("feedbackToggle");
@@ -17,12 +17,31 @@ const feedbackRefresh = document.getElementById("feedbackRefresh");
 const adminPanelTitle = document.getElementById("adminPanelTitle");
 const adminPanel = document.getElementById("adminPanel");
 const adminList = document.getElementById("adminList");
+const truckBanner = document.getElementById("truckBanner");
 const mapsAnnex = document.getElementById("mapsAnnex");
 const mapsFrame = document.getElementById("mapsFrame");
+const streetViewFrame = document.getElementById("streetViewFrame");
 const mapsOpen = document.getElementById("mapsOpen");
 const mapsTitle = document.getElementById("mapsTitle");
 const mapsAlt = document.getElementById("mapsAlt");
 const mapsAltList = document.getElementById("mapsAltList");
+const mapsSteps = document.getElementById("mapsSteps");
+const mapsStepsList = document.getElementById("mapsStepsList");
+const mapsStepsMeta = document.getElementById("mapsStepsMeta");
+const destinationPhotoWrap = document.getElementById("destinationPhotoWrap");
+const destinationPhotoFrame = document.getElementById("destinationPhotoFrame");
+const destinationPhotoMeta = document.getElementById("destinationPhotoMeta");
+const widthEstimate = document.getElementById("widthEstimate");
+const widthEstimateValue = document.getElementById("widthEstimateValue");
+const widthEstimateNote = document.getElementById("widthEstimateNote");
+const stepOverlay = document.getElementById("stepOverlay");
+const stepKicker = document.getElementById("stepKicker");
+const stepText = document.getElementById("stepText");
+const stepDistance = document.getElementById("stepDistance");
+const stepStartBtn = document.getElementById("stepStartBtn");
+const stepPrevBtn = document.getElementById("stepPrevBtn");
+const stepNextBtn = document.getElementById("stepNextBtn");
+const stepEndBtn = document.getElementById("stepEndBtn");
 const feedbackBox = document.getElementById("feedbackBox");
 const feedbackText = document.getElementById("feedbackText");
 const feedbackSend = document.getElementById("feedbackSend");
@@ -31,12 +50,14 @@ const reviewPanel = document.getElementById("reviewPanel");
 const reviewStart = document.getElementById("reviewStart");
 const reviewStreet = document.getElementById("reviewStreet");
 const reviewTruckInput = document.getElementById("reviewTruckInput");
-const reviewItineraryInput = document.getElementById("reviewItineraryInput");
+const reviewItineraryLines = document.getElementById("reviewItineraryLines");
+const reviewAddLine = document.getElementById("reviewAddLine");
 const reviewCheck = document.getElementById("reviewCheck");
 const reviewFeedback = document.getElementById("reviewFeedback");
 const loadingTop = document.getElementById("loadingTop");
 const loadingTopBar = document.getElementById("loadingTopBar");
 const loadingTopPct = document.getElementById("loadingTopPct");
+const streetFieldWrap = document.getElementById("streetFieldWrap");
 
 const OVERRIDES_KEY = "callejeroRouteOverridesV1";
 const ADMIN_SESSION_KEY = "callejeroAdminSessionV1";
@@ -59,7 +80,12 @@ let currentEntry = null;
 let loadingProgress = 0;
 let reviewCurrentStreet = "";
 let reviewCurrentEntry = null;
-const FIRE_STATION_ORIGIN = "Parque de Bomberos de Jaén";
+let activeMode = "consult";
+let routeStepsSeq = 0;
+let routeStepDetails = [];
+let activeRouteStepIndex = 0;
+let routeStepDisplayOffset = 0;
+const FIRE_STATION_ORIGIN = "37.778523,-3.811482";
 const INVERTED_ROAD_SUFFIX =
   /(calle|avenida|avda\.?|av\.?|plaza|paseo|carretera|camino|ronda|travesia|travesía|cuesta|glorieta|bulevar)/i;
 const INVERTED_ARTICLE_SUFFIX = /(del|de la|de los|de las|de|la|el|los|las)/i;
@@ -245,8 +271,11 @@ function startReviewModeRound() {
   reviewCurrentEntry = pick.entry || null;
   reviewStreet.textContent = `Calle: ${reviewCurrentStreet}`;
   reviewTruckInput.value = "";
-  reviewItineraryInput.value = "";
+  getReviewLineInputs().forEach((input) => {
+    input.value = "";
+  });
   reviewFeedback.textContent = "Escribe camión e itinerario y pulsa comprobar.";
+  getReviewLineInputs()[0]?.focus();
 }
 
 function normalizeTruckGuess(value = "") {
@@ -260,13 +289,79 @@ function parseItineraryLines(value = "") {
     .filter(Boolean);
 }
 
+function getReviewItineraryGuess() {
+  const joined = getReviewLineInputs().map((input) => input.value.trim()).filter(Boolean).join("\n");
+  return parseItineraryLines(joined);
+}
+
+function getReviewLineInputs() {
+  return [...document.querySelectorAll(".review-line-input")];
+}
+
+function renumberReviewLines() {
+  const rows = [...document.querySelectorAll(".review-line-row")];
+  rows.forEach((row, idx) => {
+    const no = row.querySelector(".review-line-no");
+    const input = row.querySelector(".review-line-input");
+    if (no) no.textContent = String(idx + 1);
+    if (input) {
+      input.setAttribute("data-line-index", String(idx));
+      input.setAttribute("placeholder", `Calle ${idx + 1}`);
+    }
+  });
+}
+
+function addReviewLine() {
+  if (!reviewItineraryLines) return;
+  const row = document.createElement("div");
+  row.className = "review-line-row";
+  row.innerHTML = '<span class="review-line-no"></span><input class="review-line-input" type="text" />';
+  reviewItineraryLines.appendChild(row);
+  renumberReviewLines();
+  const input = row.querySelector(".review-line-input");
+  if (input) input.focus();
+}
+
 function scoreItinerary(guess, real) {
   if (!real.length) return 0;
-  const gset = new Set(guess.map((x) => normalizeText(x)));
-  const rset = new Set(real.map((x) => normalizeText(x)));
+  const remainingGuess = [...guess];
   let hit = 0;
-  for (const item of gset) if (rset.has(item)) hit += 1;
-  return Math.round((hit / rset.size) * 100);
+  for (const realStreet of real) {
+    const idx = remainingGuess.findIndex((g) => streetsRoughlyMatch(g, realStreet));
+    if (idx >= 0) {
+      hit += 1;
+      remainingGuess.splice(idx, 1);
+    }
+  }
+  return Math.round((hit / real.length) * 100);
+}
+
+function comparableStreet(value = "") {
+  let text = canonicalStreetName(String(value || ""));
+  text = text
+    .replace(/\([^)]*\)/g, " ")
+    .replace(/\b(avda\.?|av\.?|avenida|calle|c\/|plaza|pza\.?|paseo|carretera|ctra\.?|camino|ronda|travesia|travesía|cuesta|glorieta|bulevar)\b/gi, " ")
+    .replace(/\b(del|de la|de los|de las|de|la|el|los|las)\b/gi, " ");
+  return normalizeText(text).replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function streetsRoughlyMatch(guess = "", real = "") {
+  const g = comparableStreet(guess);
+  const r = comparableStreet(real);
+  if (!g || !r) return false;
+  if (g === r) return true;
+
+  if ((g.length >= 4 && r.includes(g)) || (r.length >= 4 && g.includes(r))) return true;
+
+  const gTokens = g.split(" ").filter(Boolean);
+  const rTokens = r.split(" ").filter(Boolean);
+  if (gTokens.length && gTokens.every((t) => rTokens.includes(t))) return true;
+
+  const dist = levenshtein(g, r);
+  const ratio = dist / Math.max(g.length, r.length, 1);
+  if (dist <= 2 || ratio <= 0.25) return true;
+
+  return false;
 }
 
 function zoneOf(entry) {
@@ -329,19 +424,30 @@ function rebuildRouteIndex() {
 
 function setAdminUi() {
   if (isAdmin) {
-    adminState.textContent = "Modo administrador";
-    adminState.classList.add("on");
     adminToggle.textContent = "Salir admin";
     adminTools.classList.add("open");
     feedbackBox.style.display = "none";
   } else {
-    adminState.textContent = "Modo lectura";
-    adminState.classList.remove("on");
     adminToggle.textContent = "Acceso admin";
     adminTools.classList.remove("open");
     adminPanel.classList.remove("open");
     feedbackBox.style.display = "block";
   }
+}
+
+function setActiveMode(mode) {
+  activeMode = mode === "review" ? "review" : "consult";
+  const reviewOn = activeMode === "review";
+  reviewPanel.classList.toggle("open", reviewOn);
+  consultToggle.classList.toggle("is-active", !reviewOn);
+  reviewToggle.classList.toggle("is-active", reviewOn);
+  if (streetFieldWrap) {
+    streetFieldWrap.style.display = reviewOn ? "none" : "";
+  }
+  if (suggestions) {
+    suggestions.style.display = reviewOn ? "none" : "";
+  }
+  if (reviewOn) hideSuggestions();
 }
 
 function levenshtein(a, b) {
@@ -430,48 +536,424 @@ function getMatches(query) {
 }
 
 function renderNotFound(query) {
+  truckBanner.classList.add("hidden");
   result.classList.add("hidden");
   empty.textContent = `No encuentro resultados exactos para "${query}". Revisa las alternativas sugeridas en Jaén.`;
   empty.classList.remove("hidden");
-  renderGoogleMapsRoute(query, "Ruta aproximada sin ficha", 12);
+  renderGoogleMapsRoute(query, "Ruta aproximada sin ficha");
   renderMapsAlternatives(query);
 }
 
 function renderEmpty() {
+  truckBanner.classList.add("hidden");
   result.classList.add("hidden");
   empty.textContent = "Empieza a escribir para buscar una calle.";
   empty.classList.remove("hidden");
   mapsAnnex.classList.add("hidden");
   mapsAlt.classList.add("hidden");
   mapsAltList.innerHTML = "";
+  mapsSteps.classList.add("hidden");
+  mapsStepsList.innerHTML = "";
+  if (mapsStepsMeta) mapsStepsMeta.textContent = "Ruta activa (más rápida ahora)";
+  hideStepOverlay();
 }
 
 function renderPickFromListHint(query) {
+  truckBanner.classList.add("hidden");
   result.classList.add("hidden");
   mapsAnnex.classList.add("hidden");
   mapsAlt.classList.add("hidden");
   mapsAltList.innerHTML = "";
+  mapsSteps.classList.add("hidden");
+  mapsStepsList.innerHTML = "";
+  if (mapsStepsMeta) mapsStepsMeta.textContent = "Ruta activa (más rápida ahora)";
+  hideStepOverlay();
   empty.textContent = query
     ? `Selecciona una calle del listado para abrir ficha o mapa: "${query}".`
     : "Empieza a escribir para buscar una calle.";
   empty.classList.remove("hidden");
 }
 
-function renderGoogleMapsRoute(destination, title = "Ruta en Google Maps", zoom = 13) {
+function hideStepOverlay() {
+  routeStepDetails = [];
+  activeRouteStepIndex = 0;
+  routeStepDisplayOffset = 0;
+  if (stepOverlay) stepOverlay.classList.add("hidden");
+  if (streetViewFrame) streetViewFrame.src = "";
+  if (destinationPhotoWrap) destinationPhotoWrap.classList.add("hidden");
+  if (destinationPhotoFrame) destinationPhotoFrame.src = "";
+  if (destinationPhotoMeta) destinationPhotoMeta.textContent = "";
+  if (widthEstimate) widthEstimate.classList.add("hidden");
+  if (widthEstimateValue) widthEstimateValue.textContent = "Ancho estimado de vía: -";
+  if (widthEstimateNote) widthEstimateNote.textContent = "Estimación orientativa, no medición oficial.";
+}
+
+function streetViewUrlForStep(step) {
+  const lat = Number(step && step.lat);
+  const lng = Number(step && step.lng);
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return "";
+  const ll = `${lat},${lng}`;
+  return `https://maps.google.com/maps?q=&layer=c&cbll=${encodeURIComponent(ll)}&cbp=12,0,0,0,0&output=svembed`;
+}
+
+function bearingDegrees(lat1, lng1, lat2, lng2) {
+  const toRad = (deg) => (deg * Math.PI) / 180;
+  const toDeg = (rad) => (rad * 180) / Math.PI;
+  const phi1 = toRad(lat1);
+  const phi2 = toRad(lat2);
+  const dLambda = toRad(lng2 - lng1);
+  const y = Math.sin(dLambda) * Math.cos(phi2);
+  const x = Math.cos(phi1) * Math.sin(phi2) - Math.sin(phi1) * Math.cos(phi2) * Math.cos(dLambda);
+  const brng = (toDeg(Math.atan2(y, x)) + 360) % 360;
+  return Math.round(brng);
+}
+
+function escapeRegExp(value = "") {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function buildStepInstructionHtml(step) {
+  const instruction = String((step && step.instruction) || "Continúa")
+    .replace(/^\s*\d+\.\s*/, "")
+    .trim();
+  const street = String((step && step.street) || "").trim();
+  const toStreetPatterns = [
+    /\bhacia\s+(.+)$/i,
+    /\ben\s+direcci[oó]n\s+a\s+(.+)$/i,
+    /\bdirecci[oó]n\s+a\s+(.+)$/i,
+  ];
+  for (const re of toStreetPatterns) {
+    const match = instruction.match(re);
+    if (!match || !match[1]) continue;
+    const whole = String(match[0]);
+    const streetPart = String(match[1]);
+    const start = (match.index ?? 0) + whole.indexOf(streetPart);
+    const end = start + streetPart.length;
+    return `${escapeHtml(instruction.slice(0, start))}<span class="street-step-name">${escapeHtml(streetPart.trim())}</span>${escapeHtml(instruction.slice(end))}`;
+  }
+  const roadSegmentRe =
+    /\b(?:C\/|C\.|Calle|Av\.|Avda\.|Avenida|Pl\.|Pza\.|Plaza|Paseo|Carretera|Ctra\.|Rda\.|Ronda)\s*[A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9.\- ]+/i;
+  const seg = instruction.match(roadSegmentRe);
+  if (seg && seg[0]) {
+    const match = seg[0].trim();
+    const start = seg.index ?? instruction.indexOf(match);
+    const end = start + match.length;
+    return `${escapeHtml(instruction.slice(0, start))}<span class="street-step-name">${escapeHtml(match)}</span>${escapeHtml(instruction.slice(end))}`;
+  }
+  if (!street) return escapeHtml(instruction);
+  const re = new RegExp(escapeRegExp(street), "i");
+  const match = instruction.match(re);
+  if (match && match.index !== undefined) {
+    const start = match.index;
+    const end = start + match[0].length;
+    return `${escapeHtml(instruction.slice(0, start))}<span class="street-step-name">${escapeHtml(match[0])}</span>${escapeHtml(instruction.slice(end))}`;
+  }
+  return `${escapeHtml(instruction)} hacia <span class="street-step-name">${escapeHtml(street)}</span>`;
+}
+
+function normalizeInstructionKey(value = "") {
+  return normalizeText(String(value || ""))
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function normalizeStreetKey(value = "") {
+  return normalizeText(
+    String(value || "")
+      .replace(/\b(c\/|c\.|calle|av\.|avda\.|avenida|pl\.|pza\.|plaza|paseo|carretera|ctra\.|rda\.|ronda)\b/gi, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+  );
+}
+
+function dedupeConsecutiveSteps(steps = []) {
+  const out = [];
+  let prev = null;
+  for (const step of steps) {
+    const instruction = String(step && step.instruction ? step.instruction : "").trim();
+    const street = String(step && step.street ? step.street : "").trim();
+    if (!instruction) continue;
+    const current = {
+      ...step,
+      __instrKey: normalizeInstructionKey(instruction),
+      __streetKey: normalizeStreetKey(street),
+    };
+    if (!prev) {
+      out.push(current);
+      prev = current;
+      continue;
+    }
+    const sameInstruction = current.__instrKey && current.__instrKey === prev.__instrKey;
+    const sameStreet = current.__streetKey && current.__streetKey === prev.__streetKey;
+    if (sameInstruction || sameStreet) {
+      continue;
+    }
+    out.push(current);
+    prev = current;
+  }
+  return out.map(({ __instrKey, __streetKey, ...step }) => step);
+}
+
+function renderActiveStepCard() {
+  if (!stepOverlay || !stepKicker || !stepText || !stepDistance || !streetViewFrame) return;
+  if (!routeStepDetails.length) {
+    stepOverlay.classList.add("hidden");
+    streetViewFrame.src = "";
+    return;
+  }
+  const idx = Math.max(0, Math.min(activeRouteStepIndex, routeStepDetails.length - 1));
+  activeRouteStepIndex = idx;
+  const step = routeStepDetails[idx];
+  const totalSteps = routeStepDetails.length + routeStepDisplayOffset;
+  stepKicker.textContent = `Paso ${idx + 1 + routeStepDisplayOffset} de ${totalSteps}`;
+  stepText.innerHTML = buildStepInstructionHtml(step);
+  stepDistance.textContent = String(step && step.distanceText ? step.distanceText : "");
+  const sv = streetViewUrlForStep(step);
+  if (sv) streetViewFrame.src = sv;
+  stepOverlay.classList.remove("hidden");
+}
+
+function renderDestinationPhotoFromSteps() {
+  if (!destinationPhotoWrap || !destinationPhotoFrame) return;
+  if (!routeStepDetails.length) {
+    destinationPhotoWrap.classList.add("hidden");
+    destinationPhotoFrame.src = "";
+    if (destinationPhotoMeta) destinationPhotoMeta.textContent = "";
+    return;
+  }
+  const destinationHint = canonicalStreetName(
+    (currentEntry && (currentEntry.fullDestination || currentEntry.street)) || input.value || ""
+  );
+  const destinationStep = findBestDestinationStep(routeStepDetails, destinationHint);
+  const lat = Number(destinationStep && destinationStep.lat);
+  const lng = Number(destinationStep && destinationStep.lng);
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+    destinationPhotoWrap.classList.add("hidden");
+    destinationPhotoFrame.src = "";
+    if (destinationPhotoMeta) destinationPhotoMeta.textContent = "";
+    return;
+  }
+  const street = String(destinationStep && destinationStep.street ? destinationStep.street : "").trim();
+  const endLat = Number(destinationStep && destinationStep.endLat);
+  const endLng = Number(destinationStep && destinationStep.endLng);
+  const hasSegment = Number.isFinite(endLat) && Number.isFinite(endLng);
+  // Punto aproximado "dentro" de la calle: centro del último tramo, ligeramente hacia el final.
+  const centerBias = 0.62;
+  const viewLat = hasSegment ? lat + (endLat - lat) * centerBias : lat;
+  const viewLng = hasSegment ? lng + (endLng - lng) * centerBias : lng;
+  const prev = routeStepDetails.length > 1 ? routeStepDetails[routeStepDetails.length - 2] : null;
+  let heading = 0;
+  if (hasSegment) {
+    heading = bearingDegrees(viewLat, viewLng, endLat, endLng);
+  } else if (prev) {
+    const pLat = Number(prev.lat);
+    const pLng = Number(prev.lng);
+    if (Number.isFinite(pLat) && Number.isFinite(pLng)) {
+      heading = bearingDegrees(pLat, pLng, lat, lng);
+    }
+  }
+  const ll = `${viewLat},${viewLng}`;
+  destinationPhotoFrame.src = `https://maps.google.com/maps?q=&layer=c&cbll=${encodeURIComponent(ll)}&cbp=12,${heading},0,0,0&output=svembed`;
+  renderWidthEstimate(destinationStep);
+  if (destinationPhotoMeta) {
+    destinationPhotoMeta.textContent = street
+      ? `Destino aproximado (centro de tramo): ${street}`
+      : "Destino aproximado (centro de tramo)";
+  }
+  destinationPhotoWrap.classList.remove("hidden");
+}
+
+function destinationTokens(text = "") {
+  const cleaned = normalizeText(text).replace(/[.,;:()/-]/g, " ");
+  const stop = new Set([
+    "calle",
+    "c",
+    "av",
+    "avda",
+    "avenida",
+    "plaza",
+    "paseo",
+    "carretera",
+    "camino",
+    "ronda",
+    "travesia",
+    "cuesta",
+    "glorieta",
+    "bulevar",
+    "del",
+    "de",
+    "la",
+    "los",
+    "las",
+    "el"
+  ]);
+  return cleaned
+    .split(/\s+/)
+    .map((t) => t.trim())
+    .filter((t) => t.length >= 3 && !stop.has(t));
+}
+
+function findBestDestinationStep(steps = [], destination = "") {
+  if (!Array.isArray(steps) || !steps.length) return null;
+  const target = normalizeText(destination);
+  const tokens = destinationTokens(destination);
+  let best = null;
+  for (let i = steps.length - 1; i >= 0; i -= 1) {
+    const step = steps[i] || {};
+    const street = normalizeText(canonicalStreetName(String(step.street || "")));
+    if (!street) continue;
+    let score = 0;
+    if (target && (street.includes(target) || target.includes(street))) score += 8;
+    for (const token of tokens) {
+      if (street.includes(token)) score += 2;
+    }
+    if (score > 0 && (!best || score > best.score)) {
+      best = { step, score, index: i };
+    }
+  }
+  return best ? best.step : steps[steps.length - 1];
+}
+
+function estimateStreetWidth(step) {
+  const street = normalizeText(String(step && step.street ? step.street : ""));
+  const instruction = normalizeText(String(step && step.instruction ? step.instruction : ""));
+  const combined = `${street} ${instruction}`.trim();
+  // Rangos orientativos operativos para apoyo rápido.
+  if (/autovia|autopista|ronda|circunvalacion|carretera|ctra|avenida|avda|av\./i.test(combined)) {
+    return { range: "10.0-16.0 m", label: "ancha" };
+  }
+  if (/plaza|paseo|bulevar|boulevard/i.test(combined)) {
+    return { range: "8.0-12.0 m", label: "media-ancha" };
+  }
+  if (/travesia|tr\.|camino/i.test(combined)) {
+    return { range: "6.0-9.0 m", label: "media" };
+  }
+  if (/callejon|callejon|pasaje|cuesta/i.test(combined)) {
+    return { range: "3.5-5.5 m", label: "estrecha" };
+  }
+  return { range: "5.5-8.0 m", label: "media" };
+}
+
+function renderWidthEstimate(step) {
+  if (!widthEstimate || !widthEstimateValue || !widthEstimateNote) return;
+  const estimate = estimateStreetWidth(step);
+  widthEstimateValue.textContent = `Ancho estimado de vía: ${estimate.range} (${estimate.label})`;
+  widthEstimateNote.textContent = "Estimación orientativa basada en tipo de vía y contexto de ruta; no es medición oficial.";
+  widthEstimate.classList.remove("hidden");
+}
+
+function inferArrivalZoom(destination = "") {
+  const text = normalizeText(destination);
+  if (!text) return 13;
+  if (
+    text.includes("magdalena") ||
+    text.includes("san ildefonso") ||
+    text.includes("penasmefecit") ||
+    text.includes("penamefecit") ||
+    text.includes("centro") ||
+    text.includes("catedral")
+  ) {
+    return 15;
+  }
+  if (
+    text.includes("carretera") ||
+    text.includes("ctra") ||
+    text.includes("circunvalacion") ||
+    text.includes("poligono") ||
+    text.includes("urbanizacion")
+  ) {
+    return 12;
+  }
+  return 14;
+}
+
+function renderGoogleMapsRoute(destination, title = "Ruta en Google Maps", zoomOverride = null) {
   const dest = formatDestinationForMaps(destination);
   if (!dest) {
     mapsAnnex.classList.add("hidden");
     return;
   }
-  const saddr = encodeURIComponent(`${FIRE_STATION_ORIGIN}, Jaén capital, 23000, España`);
+  const saddr = encodeURIComponent(FIRE_STATION_ORIGIN);
   const daddr = encodeURIComponent(`${dest}, Jaén capital, 23000, España`);
-  const safeZoom = Number.isFinite(zoom) ? Math.max(10, Math.min(18, Math.round(zoom))) : 13;
+  const inferred = inferArrivalZoom(destination);
+  const safeZoom = Number.isFinite(zoomOverride)
+    ? Math.max(10, Math.min(18, Math.round(zoomOverride)))
+    : inferred;
   const embedUrl = `https://www.google.com/maps?output=embed&saddr=${saddr}&daddr=${daddr}&dirflg=d&layer=t&z=${safeZoom}`;
   const openUrl = `https://www.google.com/maps/dir/?api=1&origin=${saddr}&destination=${daddr}&travelmode=driving`;
   mapsFrame.src = embedUrl;
   mapsOpen.href = openUrl;
   mapsTitle.textContent = title;
   mapsAnnex.classList.remove("hidden");
+  mapsSteps.classList.remove("hidden");
+  mapsStepsList.innerHTML = "<li>Cargando indicaciones...</li>";
+  if (mapsStepsMeta) mapsStepsMeta.textContent = "Ruta activa (más rápida ahora)";
+  const seq = ++routeStepsSeq;
+  fetchRouteSteps(dest, seq).catch(() => {});
+}
+
+async function fetchRouteSteps(destination, seq) {
+  try {
+    const data = await fetchJson(`/api/route-steps?to=${encodeURIComponent(destination)}`, {
+      credentials: "include",
+    });
+    if (seq !== routeStepsSeq) return;
+    const stepsDetailed = Array.isArray(data.stepsDetailed) ? data.stepsDetailed : [];
+    const streets = Array.isArray(data.streets) ? data.streets.filter(Boolean) : [];
+    const instructions = Array.isArray(data.instructions) ? data.instructions.filter(Boolean) : [];
+    routeStepDetails = stepsDetailed.filter(
+      (step) =>
+        step &&
+        Number.isFinite(Number(step.lat)) &&
+        Number.isFinite(Number(step.lng)) &&
+        String(step.instruction || "").trim()
+    );
+    if (routeStepDetails.length > 1) {
+      routeStepDisplayOffset = 1;
+      routeStepDetails = routeStepDetails.slice(1);
+    } else {
+      routeStepDisplayOffset = 0;
+    }
+    routeStepDetails = dedupeConsecutiveSteps(routeStepDetails);
+    activeRouteStepIndex = 0;
+    if (routeStepDetails.length) {
+      renderActiveStepCard();
+      renderDestinationPhotoFromSteps();
+    } else {
+      hideStepOverlay();
+    }
+    const listStart = routeStepDetails.length ? 1 + routeStepDisplayOffset : 1;
+    mapsStepsList.setAttribute("start", String(listStart));
+    const listHtml = routeStepDetails.length
+      ? routeStepDetails
+          .map((step) => {
+            const dist = String(step.distanceText || "").trim();
+            return `<li>${buildStepInstructionHtml(step)}${dist ? ` <span class="muted">(${escapeHtml(dist)})</span>` : ""}</li>`;
+          })
+          .join("")
+      : streets.length
+      ? streets.map((street) => `<li><span class="street-step-name">${escapeHtml(street)}</span></li>`).join("")
+      : instructions
+          .map((ins) => `<li>${escapeHtml(ins)}</li>`)
+          .join("");
+    if (!listHtml) {
+      mapsSteps.classList.add("hidden");
+      mapsStepsList.innerHTML = "";
+      return;
+    }
+    mapsSteps.classList.remove("hidden");
+    if (mapsStepsMeta) {
+      mapsStepsMeta.textContent =
+        data.source === "google" ? "Ruta activa (más rápida ahora)" : "Ruta estimada (fallback)";
+    }
+    mapsStepsList.innerHTML = listHtml;
+  } catch {
+    if (seq !== routeStepsSeq) return;
+    mapsSteps.classList.remove("hidden");
+    if (mapsStepsMeta) mapsStepsMeta.textContent = "Ruta activa (más rápida ahora)";
+    mapsStepsList.innerHTML = "<li>No se pudieron cargar las indicaciones ahora mismo.</li>";
+    hideStepOverlay();
+  }
 }
 
 function getAlternativeStreetCandidates(query, limit = 6) {
@@ -526,7 +1008,7 @@ function renderMapsAlternatives(query) {
     if (!btn) return;
     const picked = alts[Number(btn.dataset.index)];
     if (!picked) return;
-    renderGoogleMapsRoute(picked.fullDestination || picked.street, "Ruta alternativa en Jaén", 13);
+    renderGoogleMapsRoute(picked.fullDestination || picked.street, "Ruta alternativa en Jaén");
     selectEntry(picked);
     mapsAlt.classList.add("hidden");
     mapsAltList.innerHTML = "";
@@ -561,6 +1043,8 @@ function formatDestinationForMaps(value = "") {
 
 function renderMatch(entry) {
   currentEntry = entry;
+  truckBanner.textContent = `Camión: ${entry.truck || "No indicado"}`;
+  truckBanner.classList.remove("hidden");
   result.classList.remove("hidden");
   empty.classList.add("hidden");
 
@@ -587,7 +1071,6 @@ function renderMatch(entry) {
     : "";
 
   result.innerHTML = `
-    <div class="chip">Camión: ${escapeHtml(entry.truck)}</div>
     <h2>${escapeHtml(displayDestination)}</h2>
     <strong>Itinerario:</strong>
     <ol class="route">${routeItems}</ol>
@@ -604,7 +1087,7 @@ function renderMatch(entry) {
         : ""
     }
   `;
-  renderGoogleMapsRoute(entry.fullDestination || entry.street, "Ruta desde Parque de Bomberos de Jaén", 13);
+  renderGoogleMapsRoute(entry.fullDestination || entry.street, "Ruta desde Parque de Bomberos de Jaén");
   mapsAlt.classList.add("hidden");
   mapsAltList.innerHTML = "";
 }
@@ -739,11 +1222,12 @@ function renderMapOnlyStreet(street) {
     mapPdf: "",
   };
   currentEntry = manualEntry;
+  truckBanner.textContent = "Camión: No indicado";
+  truckBanner.classList.remove("hidden");
   if (isAdmin) {
     result.classList.remove("hidden");
     empty.classList.add("hidden");
     result.innerHTML = `
-      <div class="chip">Camión: No indicado</div>
       <h2>${escapeHtml(clean)}</h2>
       <p class="muted">Esta calle no tiene ficha aún. Puedes crearla ahora y subir su plano PDF.</p>
       <div class="result-actions">
@@ -757,7 +1241,7 @@ function renderMapOnlyStreet(street) {
     empty.textContent = `La calle "${clean}" no tiene ficha PDF. Mostrando ruta en Google Maps (Jaén).`;
     empty.classList.remove("hidden");
   }
-  renderGoogleMapsRoute(clean, "Ruta desde Parque de Bomberos de Jaén", 13);
+  renderGoogleMapsRoute(clean, "Ruta desde Parque de Bomberos de Jaén");
   mapsAlt.classList.add("hidden");
   mapsAltList.innerHTML = "";
 }
@@ -1020,23 +1504,47 @@ async function init() {
   rebuildRouteIndex();
   setLoadingProgress(92, "Preparando interfaz");
   setAdminUi();
+  setActiveMode("consult");
   finishLoadingProgress();
 
+  consultToggle.addEventListener("click", () => {
+    setActiveMode("consult");
+  });
+
   reviewToggle.addEventListener("click", () => {
-    reviewPanel.classList.toggle("open");
+    setActiveMode("review");
   });
 
   reviewStart.addEventListener("click", () => {
     startReviewModeRound();
   });
 
+  if (reviewAddLine) {
+    reviewAddLine.addEventListener("click", () => {
+      addReviewLine();
+    });
+  }
+
+  if (reviewItineraryLines) {
+    reviewItineraryLines.addEventListener("keydown", (event) => {
+      const target = event.target;
+      if (!target || !target.classList || !target.classList.contains("review-line-input")) return;
+      if (event.key !== "Enter" || event.shiftKey) return;
+      event.preventDefault();
+      const idx = Number(target.getAttribute("data-line-index") || "-1");
+      const currentInputs = getReviewLineInputs();
+      const next = Number.isFinite(idx) ? currentInputs[idx + 1] : null;
+      if (next) next.focus();
+    });
+  }
+
   reviewCheck.addEventListener("click", () => {
     if (!reviewCurrentStreet) {
-      reviewFeedback.textContent = "Primero pulsa “Nueva calle”.";
+      reviewFeedback.textContent = "Genera una calle para comenzar el repaso.";
       return;
     }
     const guessedTruck = normalizeTruckGuess(reviewTruckInput.value);
-    const guessedItin = parseItineraryLines(reviewItineraryInput.value);
+    const guessedItin = getReviewItineraryGuess();
     if (reviewCurrentEntry) {
       const realTruck = normalizeTruckGuess(reviewCurrentEntry.truck || "No indicado");
       const realItin = (reviewCurrentEntry.itinerary || []).map((x) => canonicalStreetName(x));
@@ -1049,6 +1557,38 @@ async function init() {
     reviewFeedback.textContent = "No hay ficha para esta calle. Mostrando ruta en Google Maps.";
     renderMapOnlyStreet(reviewCurrentStreet);
   });
+
+  if (stepStartBtn) {
+    stepStartBtn.addEventListener("click", () => {
+      if (!routeStepDetails.length) return;
+      activeRouteStepIndex = 0;
+      renderActiveStepCard();
+    });
+  }
+
+  if (stepPrevBtn) {
+    stepPrevBtn.addEventListener("click", () => {
+      if (!routeStepDetails.length) return;
+      activeRouteStepIndex = Math.max(0, activeRouteStepIndex - 1);
+      renderActiveStepCard();
+    });
+  }
+
+  if (stepNextBtn) {
+    stepNextBtn.addEventListener("click", () => {
+      if (!routeStepDetails.length) return;
+      activeRouteStepIndex = Math.min(routeStepDetails.length - 1, activeRouteStepIndex + 1);
+      renderActiveStepCard();
+    });
+  }
+
+  if (stepEndBtn) {
+    stepEndBtn.addEventListener("click", () => {
+      if (!routeStepDetails.length) return;
+      activeRouteStepIndex = routeStepDetails.length - 1;
+      renderActiveStepCard();
+    });
+  }
 
   adminToggle.addEventListener("click", async () => {
     if (isAdmin) {
