@@ -269,8 +269,95 @@
         gap: 8px;
       }
 
+      .review-grid label {
+        font-weight: 700;
+        font-size: 0.96rem;
+      }
+
+      .review-grid input,
       .review-grid textarea {
-        min-height: 80px;
+        width: 100%;
+        margin-top: 6px;
+        border: 1px solid #d8c9b3;
+        border-radius: 14px;
+        padding: 12px 14px;
+        font: inherit;
+        font-weight: 700;
+        background: linear-gradient(180deg, #fffdf9, #fff8ef);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+        transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
+      }
+
+      .review-grid input:focus,
+      .review-grid textarea:focus {
+        outline: none;
+        border-color: #cc4b22;
+        box-shadow: 0 0 0 4px rgba(204, 75, 34, 0.15);
+        transform: translateY(-1px);
+      }
+
+      .review-grid textarea {
+        min-height: 180px;
+        line-height: 1.55;
+        font-weight: 600;
+        resize: vertical;
+        background:
+          linear-gradient(180deg, #fffdf9, #fff8ef),
+          repeating-linear-gradient(
+            to bottom,
+            transparent 0,
+            transparent 30px,
+            rgba(203, 61, 32, 0.12) 31px
+          );
+        background-blend-mode: normal;
+        white-space: pre-wrap;
+      }
+
+      #adminToggle,
+      #reviewStart {
+        padding: 6px 11px;
+        border-radius: 999px;
+        font-size: 0.86rem;
+        line-height: 1;
+      }
+
+      #adminToggle {
+        background: linear-gradient(180deg, #f7f1e6, #eadfcd);
+        border: 1px solid #d6c2a4;
+        box-shadow: 0 5px 12px rgba(23, 33, 38, 0.1);
+      }
+
+      #reviewStart {
+        color: #fff;
+        background: linear-gradient(120deg, #cb3d20, #e76430);
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        box-shadow: 0 8px 16px rgba(203, 61, 32, 0.26);
+      }
+
+      #reviewCheck {
+        padding: 10px 16px;
+        border-radius: 14px;
+      }
+
+      #reviewTruckInput::placeholder,
+      #reviewItineraryInput::placeholder {
+        color: #6c6f73;
+        font-weight: 600;
+      }
+
+      #reviewStreet {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 10px;
+        background: #fff4e6;
+        border: 1px solid #f0d4ac;
+      }
+
+      .review-feedback {
+        line-height: 1.45;
+      }
+
+      .review-grid textarea {
         resize: vertical;
       }
 
@@ -844,6 +931,16 @@
         .review-head {
           flex-wrap: wrap;
           align-items: flex-start;
+        }
+
+        #adminToggle,
+        #reviewStart {
+          font-size: 0.8rem;
+          padding: 6px 10px;
+        }
+
+        .review-grid textarea {
+          min-height: 150px;
         }
 
         input {
