@@ -547,6 +547,33 @@ function ensureAdminUploadsDir() {
   }
 }
 
+function tryFindPdfByName(name = '') {
+  const needleRaw = String(name || '').trim();
+  if (!needleRaw) return null;
+  const needle = normalizeText(needleRaw);
+  const candidates = [];
+  const mainDir = path.join(ROOT, 'calles');
+  if (fs.existsSync(mainDir)) {
+    for (const f of fs.readdirSync(mainDir)) {
+      if (String(f).toLowerCase().endsWith('.pdf')) candidates.push(path.join(mainDir, f));
+    }
+  }
+  if (fs.existsSync(ADMIN_UPLOADS_DIR)) {
+    for (const f of fs.readdirSync(ADMIN_UPLOADS_DIR)) {
+      if (String(f).toLowerCase().endsWith('.pdf')) candidates.push(path.join(ADMIN_UPLOADS_DIR, f));
+    }
+  }
+  for (const abs of candidates) {
+    const base = path.basename(abs);
+    if (base === needleRaw) return abs;
+  }
+  for (const abs of candidates) {
+    const base = path.basename(abs);
+    if (normalizeText(base) === needle) return abs;
+  }
+  return null;
+}
+
 function sanitizePdfFileName(value = '') {
   const base = path.basename(String(value || '').trim() || 'plano.pdf');
   const cleaned = base.replace(/[^\w .()-]/g, '_').replace(/\s+/g, ' ').trim();
@@ -675,6 +702,22 @@ const server = http.createServer(async (req, res) => {
         });
       }
     }
+  }
+
+  if (url === '/api/pdf' && req.method === 'GET') {
+    const name = String(parsedUrl.searchParams.get('name') || '').trim();
+    const found = tryFindPdfByName(name);
+    if (!found) {
+      res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+      res.end('Not found');
+      return;
+    }
+    res.writeHead(200, {
+      'Content-Type': 'application/pdf',
+      'Cache-Control': 'public, max-age=86400',
+    });
+    fs.createReadStream(found).pipe(res);
+    return;
   }
 
   if (url === '/api/streetview-photo' && req.method === 'GET') {
