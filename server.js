@@ -607,6 +607,38 @@ function sanitizePdfFileName(value = '') {
   return cleaned.toLowerCase().endsWith('.pdf') ? cleaned : `${cleaned || 'plano'}.pdf`;
 }
 
+function cleanStreetFromPdfName(name = '') {
+  const stem = path.basename(String(name || ''), path.extname(String(name || '')));
+  return String(stem)
+    .replace(/\s*\d+[\w().-]*\s*$/i, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
+function rebuildRoutesFromCallesDir() {
+  const dir = path.join(ROOT, 'calles');
+  const files = fs.existsSync(dir)
+    ? fs
+        .readdirSync(dir)
+        .filter((f) => String(f).toLowerCase().endsWith('.pdf'))
+        .sort((a, b) => normalizeText(a).localeCompare(normalizeText(b), 'es'))
+    : [];
+  const entries = files.map((file) => {
+    const street = cleanStreetFromPdfName(file) || file;
+    return {
+      street,
+      fullDestination: street,
+      truck: 'No indicado',
+      itinerary: ['Sin itinerario extraído automáticamente'],
+      notes: 'Sin nota operativa detectada automáticamente.',
+      sourcePdf: file,
+      mapPdf: `./calles/${file}`,
+    };
+  });
+  writeJson(ROUTES_PATH, entries);
+  return entries;
+}
+
 function serveStatic(req, res) {
   let reqPath = decodeURIComponent(req.url.split('?')[0]);
   if (reqPath === '/') reqPath = '/index.html';
@@ -846,6 +878,18 @@ const server = http.createServer(async (req, res) => {
       return json(res, 200, { ok: true, mapPdf: `./calles/admin_uploads/${safeName}` });
     } catch {
       return json(res, 400, { ok: false, error: 'Solicitud inválida' });
+    }
+  }
+
+  if (url === '/api/admin/reindex' && req.method === 'POST') {
+    if (!getAdmin(req)) {
+      return json(res, 403, { ok: false, error: 'No autorizado' });
+    }
+    try {
+      const entries = rebuildRoutesFromCallesDir();
+      return json(res, 200, { ok: true, count: entries.length });
+    } catch (err) {
+      return json(res, 500, { ok: false, error: String(err && err.message ? err.message : err) });
     }
   }
 

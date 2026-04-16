@@ -13,6 +13,7 @@ const reviewToggle = document.getElementById("reviewToggle");
 const adminTools = document.getElementById("adminTools");
 const pendingToggle = document.getElementById("pendingToggle");
 const feedbackToggle = document.getElementById("feedbackToggle");
+const reindexToggle = document.getElementById("reindexToggle");
 const feedbackRefresh = document.getElementById("feedbackRefresh");
 const adminPanelTitle = document.getElementById("adminPanelTitle");
 const adminPanel = document.getElementById("adminPanel");
@@ -213,11 +214,19 @@ function findRouteEntryByStreetName(name = "") {
   const stripped = normalizeText(stripLeadingArticle(stripRoadPrefix(canonical)));
   if (!stripped) return null;
 
-  // Fallback: emparejar "Calle X" con "X" en nuestras fichas.
+  // Fallback: emparejar por street/fullDestination y, en último caso, por nombre de PDF (sin numeración).
   for (const entry of routes) {
-    const entryCanon = canonicalStreetName(entry.street);
-    const entryStripped = normalizeText(stripLeadingArticle(stripRoadPrefix(entryCanon)));
-    if (entryStripped === stripped) return entry;
+    const entryStreet = canonicalStreetName(entry.street || "");
+    const entryDest = canonicalStreetName(entry.fullDestination || "");
+    const entryStreetStripped = normalizeText(stripLeadingArticle(stripRoadPrefix(entryStreet)));
+    const entryDestStripped = normalizeText(stripLeadingArticle(stripRoadPrefix(entryDest)));
+    if (entryStreetStripped === stripped || entryDestStripped === stripped) return entry;
+  }
+  for (const entry of routes) {
+    const sourceBase = canonicalStreetName(String(entry.sourcePdf || "").replace(/\.pdf$/i, "").replace(/\s*\d+[\w().-]*\s*$/i, ""));
+    const sourceStripped = normalizeText(stripLeadingArticle(stripRoadPrefix(sourceBase)));
+    if (!sourceStripped) continue;
+    if (sourceStripped === stripped || sourceStripped.includes(stripped) || stripped.includes(sourceStripped)) return entry;
   }
   return null;
 }
@@ -1743,6 +1752,36 @@ async function init() {
     adminPanel.classList.add("open");
     await renderFeedbackList();
   });
+
+  if (reindexToggle) {
+    reindexToggle.addEventListener("click", async () => {
+      if (!isAdmin) return;
+      if (!apiAvailable) {
+        window.alert("Reindexado disponible con backend activo.");
+        return;
+      }
+      const prev = reindexToggle.textContent;
+      reindexToggle.disabled = true;
+      reindexToggle.textContent = "Reindexando...";
+      try {
+        const data = await fetchJson("/api/admin/reindex", {
+          method: "POST",
+          credentials: "include",
+        });
+        baseRoutes = await fetchJson("/api/routes", { credentials: "include" });
+        overrides = await fetchJson("/api/overrides", { credentials: "include" });
+        routes = applyOverrides(baseRoutes);
+        rebuildRouteIndex();
+        await refreshQueryRender();
+        window.alert(`Reindexado completado: ${Number(data.count || routes.length)} fichas.`);
+      } catch {
+        window.alert("No se pudo completar el reindexado.");
+      } finally {
+        reindexToggle.disabled = false;
+        reindexToggle.textContent = prev;
+      }
+    });
+  }
 
   feedbackRefresh.addEventListener("click", async () => {
     if (!isAdmin) return;
