@@ -902,6 +902,19 @@
 
       .maps-annex h3 {
         margin: 0 0 10px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .maps-ficha-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: #2f6a39;
       }
 
       .maps-split {
@@ -1292,7 +1305,7 @@
 
       <section id="truckBanner" class="truck-banner hidden" aria-live="polite"></section>
       <section id="mapsAnnex" class="maps-annex hidden">
-        <h3 id="mapsTitle">Ruta en Google Maps</h3>
+        <h3 id="mapsTitle">Ruta en Google Maps <span id="mapsFichaStatus" class="maps-ficha-status"></span></h3>
         <div id="mapsRouteNote" class="muted"></div>
         <div id="mapsSteps" class="maps-steps hidden">
           <h4>Indicaciones del recorrido:</h4>

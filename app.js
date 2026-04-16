@@ -24,6 +24,7 @@ const mapsFrame = document.getElementById("mapsFrame");
 const streetViewFrame = document.getElementById("streetViewFrame");
 const mapsOpen = document.getElementById("mapsOpen");
 const mapsTitle = document.getElementById("mapsTitle");
+const mapsFichaStatus = document.getElementById("mapsFichaStatus");
 const mapsRouteNote = document.getElementById("mapsRouteNote");
 const mapsAlt = document.getElementById("mapsAlt");
 const mapsAltList = document.getElementById("mapsAltList");
@@ -959,7 +960,14 @@ function renderGoogleMapsRoute(destination, title = "Ruta en Google Maps", zoomO
   const openUrl = `https://www.google.com/maps/dir/?api=1&origin=${saddr}&destination=${daddr}&travelmode=driving`;
   mapsFrame.src = embedUrl;
   mapsOpen.href = openUrl;
-  mapsTitle.textContent = title;
+  if (mapsTitle) mapsTitle.childNodes[0].textContent = `${title} `;
+  if (mapsFichaStatus) {
+    if (hasFicha) {
+      mapsFichaStatus.innerHTML = '✅ <span>esta calle tiene plano de chico</span> <a href="#result" class="suggestion-map-icon" aria-label="Ir a ficha" title="Ir a ficha">🗺️</a>';
+    } else {
+      mapsFichaStatus.innerHTML = "";
+    }
+  }
   if (mapsRouteNote) {
     if (hasFicha) {
       mapsRouteNote.innerHTML =
