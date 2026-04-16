@@ -680,6 +680,29 @@ function normalizeStreetKey(value = "") {
   );
 }
 
+function parseDistanceMeters(value = "") {
+  const text = normalizeText(String(value || ""));
+  const mKm = text.match(/(\d+(?:[.,]\d+)?)\s*km/);
+  if (mKm) return Math.round(Number(mKm[1].replace(",", ".")) * 1000);
+  const mM = text.match(/(\d+(?:[.,]\d+)?)\s*m\b/);
+  if (mM) return Math.round(Number(mM[1].replace(",", ".")));
+  return 0;
+}
+
+function instructionCompressionKey(value = "") {
+  return normalizeInstructionKey(value)
+    .replace(/\b\d+\.\s*/g, " ")
+    .replace(/\ben la rotonda\b/g, " rotonda ")
+    .replace(/\btoma la (primera|segunda|tercera|cuarta|quinta)\s+salida\b/g, " salida ")
+    .replace(/\by continua por\b/g, " ")
+    .replace(/\bcontinua por\b/g, " ")
+    .replace(/\bhacia\b/g, " ")
+    .replace(/\ben direccion a\b/g, " ")
+    .replace(/\bdireccion a\b/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function dedupeConsecutiveSteps(steps = []) {
   const out = [];
   let prev = null;
@@ -691,6 +714,8 @@ function dedupeConsecutiveSteps(steps = []) {
       ...step,
       __instrKey: normalizeInstructionKey(instruction),
       __streetKey: normalizeStreetKey(street),
+      __compressKey: instructionCompressionKey(instruction),
+      __meters: parseDistanceMeters(step && step.distanceText ? step.distanceText : ""),
     };
     if (!prev) {
       out.push(current);
@@ -699,13 +724,36 @@ function dedupeConsecutiveSteps(steps = []) {
     }
     const sameInstruction = current.__instrKey && current.__instrKey === prev.__instrKey;
     const sameStreet = current.__streetKey && current.__streetKey === prev.__streetKey;
-    if (sameInstruction || sameStreet) {
+    const bothRoundabout =
+      /rotonda/i.test(current.__instrKey) && /rotonda/i.test(prev.__instrKey);
+    const sameManeuver =
+      normalizeText(String(current.maneuver || "")) &&
+      normalizeText(String(current.maneuver || "")) === normalizeText(String(prev.maneuver || ""));
+    const nearDuplicateByText =
+      current.__compressKey &&
+      prev.__compressKey &&
+      (current.__compressKey === prev.__compressKey ||
+        current.__compressKey.includes(prev.__compressKey) ||
+        prev.__compressKey.includes(current.__compressKey));
+    const nearDuplicate =
+      sameInstruction ||
+      (sameStreet && (bothRoundabout || sameManeuver || nearDuplicateByText));
+
+    if (nearDuplicate) {
+      // Mantener la versión más informativa/larga del mismo paso.
+      const replacePrev =
+        current.__meters > prev.__meters ||
+        String(current.instruction || "").length > String(prev.instruction || "").length;
+      if (replacePrev) {
+        out[out.length - 1] = current;
+        prev = current;
+      }
       continue;
     }
     out.push(current);
     prev = current;
   }
-  return out.map(({ __instrKey, __streetKey, ...step }) => step);
+  return out.map(({ __instrKey, __streetKey, __compressKey, __meters, ...step }) => step);
 }
 
 function renderActiveStepCard() {
