@@ -830,11 +830,28 @@ const server = http.createServer(async (req, res) => {
       return json(res, 400, { ok: false, error: 'source_required' });
     }
     const routes = withOverrides();
-    const entry = routes.find((r) => String(r.sourcePdf || '').trim() === source);
+    const sourceNorm = normalizeText(source);
+    let entry =
+      routes.find((r) => String(r.sourcePdf || '').trim() === source) ||
+      routes.find((r) => normalizeText(String(r.sourcePdf || '').trim()) === sourceNorm) ||
+      null;
+
+    // Fallback 1: si no encuentra por source, intentamos por nombre de archivo en mapPdf.
     if (!entry) {
-      return json(res, 404, { ok: false, error: 'source_not_found' });
+      const byMap = routes.find((r) => {
+        const mp = String(r.mapPdf || '').trim();
+        if (!mp) return false;
+        const fileName = path.basename(mp.replace(/^\.\//, ''));
+        return normalizeText(fileName) === sourceNorm;
+      });
+      if (byMap) entry = byMap;
     }
-    const abs = absPdfFromMapPdf(entry.mapPdf || '');
+
+    // Fallback 2: buscamos fichero físicamente por nombre flexible.
+    let abs = entry ? absPdfFromMapPdf(entry.mapPdf || '') : null;
+    if (!abs) {
+      abs = tryFindPdfByName(source);
+    }
     if (!abs) {
       return json(res, 404, { ok: false, error: 'pdf_not_found' });
     }
