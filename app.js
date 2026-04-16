@@ -1460,6 +1460,13 @@ function localIndexSearch(query) {
     else if (qAlt && (s.startsWith(qAlt) || sAlt.startsWith(qAlt))) score = 110 - (sAlt.length - qAlt.length);
     else if (s.includes(q) || sAlt.includes(q)) score = 100 - Math.min(s.indexOf(q), sAlt.indexOf(q));
     else if (qAlt && (s.includes(qAlt) || sAlt.includes(qAlt))) score = 90 - Math.min(s.indexOf(qAlt), sAlt.indexOf(qAlt));
+    else {
+      const probe = qAlt || q;
+      const target = (sAlt || s).slice(0, Math.max(probe.length + 4, 14));
+      const d = levenshtein(probe, target);
+      const ratio = d / Math.max(probe.length, 1);
+      if (ratio <= 0.34) score = Math.round(65 - ratio * 30);
+    }
     if (score >= 0) scored.push({ name: canon, score });
   }
   scored.sort((a, b) => b.score - a.score);

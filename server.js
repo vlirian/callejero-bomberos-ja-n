@@ -41,6 +41,21 @@ function normalizeText(value = '') {
     .trim();
 }
 
+function levenshtein(a = '', b = '') {
+  const m = a.length;
+  const n = b.length;
+  const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+  for (let i = 0; i <= m; i += 1) dp[i][0] = i;
+  for (let j = 0; j <= n; j += 1) dp[0][j] = j;
+  for (let i = 1; i <= m; i += 1) {
+    for (let j = 1; j <= n; j += 1) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost);
+    }
+  }
+  return dp[m][n];
+}
+
 function canonicalStreetName(value = '') {
   const raw = String(value || '')
     .replace(/\b(BUP|BUL|BUP\/BUL|BUL\/BUP)\b/gi, ' ')
@@ -389,6 +404,12 @@ function localStreetIndexCandidates(query) {
     else if (s.includes(q)) score = 100 - s.indexOf(q);
     else if (ss.startsWith(q)) score = 95 - (ss.length - q.length);
     else if (ss.includes(q)) score = 80 - ss.indexOf(q);
+    else {
+      const target = (ss || s).slice(0, Math.max(q.length + 4, 14));
+      const dist = levenshtein(q, target);
+      const ratio = dist / Math.max(q.length, 1);
+      if (ratio <= 0.34) score = Math.round(65 - ratio * 30);
+    }
     if (score >= 0) scored.push({ street: canonicalStreetName(raw), score });
   }
   scored.sort((a, b) => b.score - a.score);
@@ -419,6 +440,12 @@ function localRouteStreetCandidates(query) {
     else if (s.includes(q)) score = 100 - s.indexOf(q);
     else if (ss.startsWith(q)) score = 95 - (ss.length - q.length);
     else if (ss.includes(q)) score = 80 - ss.indexOf(q);
+    else {
+      const target = (ss || s).slice(0, Math.max(q.length + 4, 14));
+      const dist = levenshtein(q, target);
+      const ratio = dist / Math.max(q.length, 1);
+      if (ratio <= 0.34) score = Math.round(65 - ratio * 30);
+    }
     if (score >= 0) scored.push({ street: raw, score });
   }
   scored.sort((a, b) => b.score - a.score);
