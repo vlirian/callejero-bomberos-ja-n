@@ -932,7 +932,7 @@ async function fetchRouteSteps(destination, seq) {
     activeRouteStepIndex = 0;
     if (routeStepDetails.length) {
       renderActiveStepCard();
-      renderDestinationPhotoFromSteps();
+      // Foto de calle destino desactivada por decisión de producto.
     } else {
       hideStepOverlay();
     }
