@@ -580,10 +580,13 @@ function isPdfLikeFile(absPath) {
     const st = fs.statSync(absPath);
     if (!st.isFile()) return false;
     const fd = fs.openSync(absPath, 'r');
-    const buf = Buffer.alloc(4);
-    fs.readSync(fd, buf, 0, 4, 0);
+    const buf = Buffer.alloc(2048);
+    fs.readSync(fd, buf, 0, 2048, 0);
     fs.closeSync(fd);
-    return buf.toString('utf8') === '%PDF';
+    const head = buf.toString('latin1');
+    if (head.includes('%PDF')) return true;
+    // Fallback por extensión cuando no se puede detectar cabecera claramente.
+    return path.extname(absPath).toLowerCase() === '.pdf';
   } catch {
     return false;
   }
