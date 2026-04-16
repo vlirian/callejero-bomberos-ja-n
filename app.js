@@ -1055,6 +1055,28 @@ function formatDestinationForMaps(value = "") {
   return text;
 }
 
+function safeAssetPath(pathValue = "") {
+  const raw = String(pathValue || "").trim();
+  if (!raw) return "";
+  // Normaliza ./calles/... y codifica cada segmento para espacios/tildes.
+  const normalized = raw.replace(/^\.\//, "/");
+  const parts = normalized.split("/").filter(Boolean).map((p) => encodeURIComponent(p));
+  return `/${parts.join("/")}`;
+}
+
+function resolveEntryMapPdf(entry) {
+  const mapPdf = String(entry && entry.mapPdf ? entry.mapPdf : "").trim();
+  if (mapPdf) return safeAssetPath(mapPdf);
+  const src = String(entry && entry.sourcePdf ? entry.sourcePdf : "").trim();
+  if (!src || src.startsWith("manual::")) return "";
+  return safeAssetPath(`/calles/${src}`);
+}
+
+function resolveEntryMapImage(entry) {
+  const mapImage = String(entry && entry.mapImage ? entry.mapImage : "").trim();
+  return mapImage ? safeAssetPath(mapImage) : "";
+}
+
 function renderMatch(entry) {
   currentEntry = entry;
   truckBanner.textContent = `Camión: ${entry.truck || "No indicado"}`;
@@ -1064,23 +1086,25 @@ function renderMatch(entry) {
 
   const routeItems = entry.itinerary.map((step) => `<li>${escapeHtml(canonicalStreetName(step))}</li>`).join("");
   const displayDestination = canonicalStreetName(entry.fullDestination || entry.street);
-  const mapBlock = entry.mapImage
+  const mapPdfUrl = resolveEntryMapPdf(entry);
+  const mapImageUrl = resolveEntryMapImage(entry);
+  const mapBlock = mapImageUrl
     ? `
       <strong>Plano completo:</strong>
       <figure class="map-card">
-        <img src="${entry.mapImage}" alt="Plano de ${displayDestination}" loading="lazy" />
-        <button class="map-overlay" type="button" data-map-image="${entry.mapImage}" data-map-pdf="${entry.mapPdf || ""}" data-map-title="${displayDestination}" aria-label="Ampliar plano"></button>
+        <img src="${mapImageUrl}" alt="Plano de ${displayDestination}" loading="lazy" />
+        <button class="map-overlay" type="button" data-map-image="${mapImageUrl}" data-map-pdf="${mapPdfUrl || ""}" data-map-title="${displayDestination}" aria-label="Ampliar plano"></button>
       </figure>
-      <button class="map-open" type="button" data-map-image="${entry.mapImage}" data-map-pdf="${entry.mapPdf || ""}" data-map-title="${displayDestination}">Ampliar plano</button>
+      <button class="map-open" type="button" data-map-image="${mapImageUrl}" data-map-pdf="${mapPdfUrl || ""}" data-map-title="${displayDestination}">Ampliar plano</button>
     `
-    : entry.mapPdf
+    : mapPdfUrl
     ? `
       <strong>Plano completo (PDF):</strong>
       <figure class="map-card">
-        <iframe class="route-pdf-frame" src="${entry.mapPdf}#page=1&view=FitH&navpanes=0" title="Plano de ${displayDestination}" loading="lazy"></iframe>
-        <button class="map-overlay" type="button" data-map-pdf="${entry.mapPdf}" data-map-title="${displayDestination}" aria-label="Ampliar plano"></button>
+        <iframe class="route-pdf-frame" src="${mapPdfUrl}#page=1&view=FitH&navpanes=0" title="Plano de ${displayDestination}" loading="lazy"></iframe>
+        <button class="map-overlay" type="button" data-map-pdf="${mapPdfUrl}" data-map-title="${displayDestination}" aria-label="Ampliar plano"></button>
       </figure>
-      <button class="map-open" type="button" data-map-pdf="${entry.mapPdf}" data-map-title="${displayDestination}">Ampliar plano</button>
+      <button class="map-open" type="button" data-map-pdf="${mapPdfUrl}" data-map-title="${displayDestination}">Ampliar plano</button>
     `
     : "";
 
