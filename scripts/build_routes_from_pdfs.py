@@ -28,10 +28,22 @@ MANUAL_OVERRIDES = {
 
 
 def clean_street(name: str) -> str:
-    stem = Path(name).stem
-    stem = re.sub(r'\s*\d+[\w().-]*\s*$', '', stem).strip()
+    stem = Path(name).name.strip()
+    stem = re.sub(r'\.pdf\b', ' ', stem, flags=re.IGNORECASE)
+    stem = re.sub(r'^\.+', ' ', stem)
+    stem = re.sub(r'\s*\d+[\w().-]*\s*$', '', stem).strip(" .-_")
     stem = re.sub(r'\s{2,}', ' ', stem)
     return stem
+
+
+def is_pdf_like(pdf_path: Path) -> bool:
+    try:
+        if not pdf_path.is_file():
+            return False
+        with pdf_path.open('rb') as fh:
+            return fh.read(4) == b'%PDF'
+    except Exception:
+        return False
 
 
 def pdf_text(pdf_path: Path) -> str:
@@ -169,7 +181,7 @@ def parse_pdf(pdf_path: Path) -> dict:
 
 
 def main() -> None:
-    pdfs = sorted(PDF_DIR.glob('*.pdf'))
+    pdfs = sorted([p for p in PDF_DIR.iterdir() if is_pdf_like(p)], key=lambda p: normalize_cmp(p.name))
     entries = []
     for pdf in pdfs:
         try:
@@ -187,6 +199,27 @@ def main() -> None:
                 }
             )
 
+    # Dedupe por calle normalizada para evitar fichas repetidas.
+    dedup = {}
+    for entry in entries:
+        key = normalize_cmp(clean_street(entry.get('street', '')))
+        if not key:
+            continue
+        prev = dedup.get(key)
+        if not prev:
+            dedup[key] = entry
+            continue
+        prev_no_truck = normalize_cmp(prev.get('truck', '')) == 'no indicado'
+        cur_no_truck = normalize_cmp(entry.get('truck', '')) == 'no indicado'
+        if prev_no_truck != cur_no_truck:
+            dedup[key] = entry if prev_no_truck else prev
+            continue
+        prev_itin = len([x for x in (prev.get('itinerary') or []) if normalize_cmp(x) and 'sin itinerario extraido automaticamente' not in normalize_cmp(x)])
+        cur_itin = len([x for x in (entry.get('itinerary') or []) if normalize_cmp(x) and 'sin itinerario extraido automaticamente' not in normalize_cmp(x)])
+        if cur_itin > prev_itin:
+            dedup[key] = entry
+
+    entries = list(dedup.values())
     entries.sort(key=lambda x: normalize_cmp(x['street']))
     OUT_JSON.write_text(json.dumps(entries, ensure_ascii=False, indent=2), encoding='utf-8')
     print(f'Procesados {len(entries)} PDF(s).')

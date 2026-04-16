@@ -193,7 +193,11 @@ function stripRoadPrefix(value = "") {
 
 function streetDedupKey(value = "") {
   const canonical = canonicalStreetName(String(value || ""));
-  const plain = stripLeadingArticle(stripRoadPrefix(canonical));
+  const plain = stripLeadingArticle(stripRoadPrefix(canonical))
+    .replace(/\([^)]*\)/g, " ")
+    .replace(/[.,;:_-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
   return normalizeText(plain || canonical);
 }
 

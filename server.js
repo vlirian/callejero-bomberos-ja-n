@@ -3,6 +3,7 @@ const https = require('https');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const { execFileSync } = require('child_process');
 
 const ROOT = __dirname;
 const ROUTES_PATH = path.join(ROOT, 'data', 'routes.json');
@@ -902,7 +903,11 @@ const server = http.createServer(async (req, res) => {
       return json(res, 403, { ok: false, error: 'No autorizado' });
     }
     try {
-      const entries = rebuildRoutesFromCallesDir();
+      const scriptPath = path.join(ROOT, 'scripts', 'build_routes_from_pdfs.py');
+      if (fs.existsSync(scriptPath)) {
+        execFileSync('python3', [scriptPath], { cwd: ROOT, stdio: 'pipe' });
+      }
+      const entries = readJson(ROUTES_PATH, []);
       return json(res, 200, { ok: true, count: entries.length });
     } catch (err) {
       return json(res, 500, { ok: false, error: String(err && err.message ? err.message : err) });
