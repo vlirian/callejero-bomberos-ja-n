@@ -1136,12 +1136,12 @@ function safeAssetPath(pathValue = "") {
 }
 
 function resolveEntryMapPdf(entry) {
-  const mapPdf = String(entry && entry.mapPdf ? entry.mapPdf : "").trim();
-  if (mapPdf) return safeAssetPath(mapPdf);
   const src = String(entry && entry.sourcePdf ? entry.sourcePdf : "").trim();
   if (src && !src.startsWith("manual::")) {
-    return `/api/pdf?name=${encodeURIComponent(src)}`;
+    return `/api/pdf-by-source?source=${encodeURIComponent(src)}`;
   }
+  const mapPdf = String(entry && entry.mapPdf ? entry.mapPdf : "").trim();
+  if (mapPdf) return safeAssetPath(mapPdf);
   return "";
 }
 

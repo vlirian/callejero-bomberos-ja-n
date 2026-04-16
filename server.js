@@ -707,6 +707,16 @@ function serveStatic(req, res) {
   });
 }
 
+function absPdfFromMapPdf(mapPdf = '') {
+  const raw = String(mapPdf || '').trim();
+  if (!raw) return null;
+  const rel = raw.replace(/^\.\//, '');
+  const abs = path.join(ROOT, rel);
+  if (!abs.startsWith(ROOT)) return null;
+  if (!fs.existsSync(abs)) return null;
+  return abs;
+}
+
 const server = http.createServer(async (req, res) => {
   const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   const url = parsedUrl.pathname;
@@ -811,6 +821,28 @@ const server = http.createServer(async (req, res) => {
       'Cache-Control': 'public, max-age=86400',
     });
     fs.createReadStream(found).pipe(res);
+    return;
+  }
+
+  if (url === '/api/pdf-by-source' && req.method === 'GET') {
+    const source = String(parsedUrl.searchParams.get('source') || '').trim();
+    if (!source) {
+      return json(res, 400, { ok: false, error: 'source_required' });
+    }
+    const routes = withOverrides();
+    const entry = routes.find((r) => String(r.sourcePdf || '').trim() === source);
+    if (!entry) {
+      return json(res, 404, { ok: false, error: 'source_not_found' });
+    }
+    const abs = absPdfFromMapPdf(entry.mapPdf || '');
+    if (!abs) {
+      return json(res, 404, { ok: false, error: 'pdf_not_found' });
+    }
+    res.writeHead(200, {
+      'Content-Type': 'application/pdf',
+      'Cache-Control': 'public, max-age=86400',
+    });
+    fs.createReadStream(abs).pipe(res);
     return;
   }
 
