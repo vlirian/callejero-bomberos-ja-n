@@ -602,6 +602,14 @@ function tryFindPdfByName(name = '') {
   const needleRaw = String(name || '').trim();
   if (!needleRaw) return null;
   const needle = normalizeText(needleRaw);
+  const soften = (value = '') =>
+    normalizeText(String(value || ''))
+      .replace(/\.pdf\b/g, ' ')
+      .replace(/\b(trav\.?|travesia|travesía|prol\.?|prolongacion|prolongación)\b/g, ' ')
+      .replace(/[.,;:_-]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  const needleSoft = soften(needleRaw);
   const candidates = [];
   const mainDir = path.join(ROOT, 'calles');
   for (const f of listPdfLikeFilesFromCalles()) {
@@ -619,6 +627,13 @@ function tryFindPdfByName(name = '') {
   for (const abs of candidates) {
     const base = path.basename(abs);
     if (normalizeText(base) === needle) return abs;
+  }
+  for (const abs of candidates) {
+    const base = path.basename(abs);
+    const baseSoft = soften(base);
+    if (!baseSoft || !needleSoft) continue;
+    if (baseSoft === needleSoft) return abs;
+    if (baseSoft.includes(needleSoft) || needleSoft.includes(baseSoft)) return abs;
   }
   return null;
 }
