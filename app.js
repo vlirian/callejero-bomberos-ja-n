@@ -704,6 +704,38 @@ function parseDistanceMeters(value = "") {
   return 0;
 }
 
+function compactOperationalSteps(steps = []) {
+  if (!Array.isArray(steps) || !steps.length) return [];
+  const out = [];
+  for (const step of steps) {
+    const instruction = String(step && step.instruction ? step.instruction : "").trim();
+    const street = normalizeStreetKey(String(step && step.street ? step.street : ""));
+    const meters = parseDistanceMeters(step && step.distanceText ? step.distanceText : "");
+    if (!instruction) continue;
+    if (!out.length) {
+      out.push(step);
+      continue;
+    }
+    const prev = out[out.length - 1];
+    const prevStreet = normalizeStreetKey(String(prev && prev.street ? prev.street : ""));
+    const sameStreet = street && prevStreet && street === prevStreet;
+    const maneuver = normalizeText(String(step && step.maneuver ? step.maneuver : ""));
+    const prevManeuver = normalizeText(String(prev && prev.maneuver ? prev.maneuver : ""));
+    const tiny = meters > 0 && meters <= 45;
+    const sameManeuver = maneuver && prevManeuver && maneuver === prevManeuver;
+    // Compactar micro-indicaciones consecutivas del mismo tramo.
+    if (sameStreet && (tiny || sameManeuver)) {
+      const prevMeters = parseDistanceMeters(prev && prev.distanceText ? prev.distanceText : "");
+      const keepCurrent =
+        meters > prevMeters || String(instruction).length > String(prev && prev.instruction ? prev.instruction : "").length;
+      if (keepCurrent) out[out.length - 1] = step;
+      continue;
+    }
+    out.push(step);
+  }
+  return out;
+}
+
 function instructionCompressionKey(value = "") {
   return normalizeInstructionKey(value)
     .replace(/\b\d+\.\s*/g, " ")
@@ -1008,6 +1040,7 @@ async function fetchRouteSteps(destination, seq) {
       routeStepDisplayOffset = 0;
     }
     routeStepDetails = dedupeConsecutiveSteps(routeStepDetails);
+    routeStepDetails = compactOperationalSteps(routeStepDetails);
     activeRouteStepIndex = 0;
     if (routeStepDetails.length) {
       renderActiveStepCard();
