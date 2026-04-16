@@ -75,7 +75,7 @@
   },
   {
     "street": "Abeto",
-    "fullDestination": "El Abeto (Fuentezuelas 2ª Fase)",
+    "fullDestination": "Abeto, El (Fuentezuelas 2ª Fase)",
     "truck": "BUP",
     "itinerary": [
       "Coger el lateral de Avda. de Los Aparejadores",
@@ -98,8 +98,8 @@
     "mapPdf": "./calles/Abogado de oficio 6.pdf"
   },
   {
-    "street": "Plaza del Acho",
-    "fullDestination": "Plaza del Acho (Ctra. de Circunvalación)",
+    "street": "Acho, Plaza del",
+    "fullDestination": "Acho, Plaza del (Ctra. de Circunvalación)",
     "truck": "BUP",
     "itinerary": [
       "Circunvalación",
@@ -217,6 +217,17 @@
     "mapPdf": "./calles/Aldana 29-2.pdf"
   },
   {
+    "street": "Alegría",
+    "fullDestination": "Alegría",
+    "truck": "BUP",
+    "itinerary": [
+      "Carretera de circunvalación nº 110 (por BUENAVISTA)"
+    ],
+    "notes": "Sin nota operativa detectada automáticamente.",
+    "sourcePdf": "Alegría 30.pdf",
+    "mapPdf": "./calles/Alegría 30.pdf"
+  },
+  {
     "street": "Alguacil",
     "fullDestination": "Alguacil",
     "truck": "BUL",
@@ -293,7 +304,7 @@
     "truck": "BUL",
     "itinerary": [
       "Hidrante subterraneo",
-      "Los Ángeles",
+      "Ángeles, Los",
       "Boca de riego",
       "Doctor Eduardo Arroyo",
       "Plaza Rosa",
@@ -321,8 +332,8 @@
     "mapPdf": "./calles/Antonio de las Viñas 61.pdf"
   },
   {
-    "street": "Avenida Antonio Pascual Acosta",
-    "fullDestination": "Avenida Antonio Pascual Acosta",
+    "street": "Antonio Pascual Acosta, Avenida",
+    "fullDestination": "Antonio Pascual Acosta, Avenida",
     "truck": "BUP",
     "itinerary": [
       "Ctra. de Madrid",
@@ -479,8 +490,8 @@
     "mapPdf": "./calles/Bailén 96.pdf"
   },
   {
-    "street": "Avenida de Barcelona",
-    "fullDestination": "Avenida de Barcelona",
+    "street": "Barcelona, Avenida de",
+    "fullDestination": "Barcelona, Avenida de",
     "truck": "BUP",
     "itinerary": [
       "Avenida de Andalucía",
@@ -524,8 +535,8 @@
     "mapPdf": "./calles/Batería 103.pdf"
   },
   {
-    "street": "Cuesta de Belen",
-    "fullDestination": "Cuesta de Belen",
+    "street": "Belen, Cuesta de",
+    "fullDestination": "Belen, Cuesta de",
     "truck": "BUP",
     "itinerary": [
       "Avda. de Madrid",
@@ -552,8 +563,8 @@
     "mapPdf": "./calles/Belén, Eras de 106.pdf"
   },
   {
-    "street": "Plaza de Belen",
-    "fullDestination": "Plaza de Belén",
+    "street": "Belen, Plaza de",
+    "fullDestination": "Belén, Plaza de",
     "truck": "BUP",
     "itinerary": [
       "Avda. de Madrid",
@@ -566,8 +577,8 @@
     "mapPdf": "./calles/Belen, Plaza de 107.pdf"
   },
   {
-    "street": "Las Bernardas",
-    "fullDestination": "Las Bernardas",
+    "street": "Bernardas, Las",
+    "fullDestination": "Bernardas, Las",
     "truck": "BUL",
     "itinerary": [
       "Avda. de Granada",
@@ -658,8 +669,8 @@
     "mapPdf": "./calles/Buenavista 121.pdf"
   },
   {
-    "street": "Los Caldereros",
-    "fullDestination": "Los Caldereros (Pol. Ind. Llanos del Valle)",
+    "street": "Caldereros, Los",
+    "fullDestination": "Caldereros, Los (Pol. Ind. Llanos del Valle)",
     "truck": "BUP",
     "itinerary": [
       "Avda. de Madrid",
@@ -698,8 +709,8 @@
     "mapPdf": "./calles/Callejón del gato 133.pdf"
   },
   {
-    "street": "Calle Cambil",
-    "fullDestination": "Calle Cambil",
+    "street": "Cambil, calle",
+    "fullDestination": "Cambil, calle",
     "truck": "BUL",
     "itinerary": [
       "Hidrante subterraneo",
@@ -727,8 +738,8 @@
     "mapPdf": "./calles/Camino Arroyo del Término 139-2.pdf"
   },
   {
-    "street": "Los Campaneros",
-    "fullDestination": "Los Campaneros (Pol. Ind. Llanos del Valle)",
+    "street": "Campaneros, Los",
+    "fullDestination": "Campaneros, Los (Pol. Ind. Llanos del Valle)",
     "truck": "BUP",
     "itinerary": [
       "Avda. de Madrid",
@@ -769,8 +780,8 @@
     "mapPdf": "./calles/Cantaor Canalejas 149.pdf"
   },
   {
-    "street": "Los Canteros",
-    "fullDestination": "Los Canteros (Pol. Ind. Llanos del Valle)",
+    "street": "Canteros, Los",
+    "fullDestination": "Canteros, Los (Pol. Ind. Llanos del Valle)",
     "truck": "BUP",
     "itinerary": [
       "Avda. de Madrid",
@@ -937,8 +948,8 @@
     "mapPdf": "./calles/Concha Espina 212.pdf"
   },
   {
-    "street": "Travesía Condestable Iranzo",
-    "fullDestination": "Travesía Condestable Iranzo (Santa Isabel)",
+    "street": "Condestable Iranzo, Travesía",
+    "fullDestination": "Condestable Iranzo, Travesía (Santa Isabel)",
     "truck": "BUP",
     "itinerary": [
       "Avenida de Andalucía",
@@ -965,8 +976,8 @@
     "mapPdf": "./calles/Conserje Enrique López 218.pdf"
   },
   {
-    "street": "Plaza de la Corona",
-    "fullDestination": "Plaza de la Corona",
+    "street": "Corona, Plaza de La",
+    "fullDestination": "Corona, Plaza de La",
     "truck": "BUL",
     "itinerary": [
       "Alcantarilla",
@@ -993,8 +1004,8 @@
     "mapPdf": "./calles/Corregidores 229.pdf"
   },
   {
-    "street": "Plaza Cristo de la Expiración",
-    "fullDestination": "Plaza del Cristo de la Expiración",
+    "street": "Cristo de la Expiración, Plaza",
+    "fullDestination": "Cristo de la Expiración, Plaza del",
     "truck": "BUL",
     "itinerary": [
       "Doctor Eduardo Arroyo",
@@ -1094,8 +1105,8 @@
     "mapPdf": "./calles/Cruz Roja Española 245.pdf"
   },
   {
-    "street": "Plaza Cruz Rueda",
-    "fullDestination": "Plaza Cruz Rueda",
+    "street": "Cruz Rueda, Plaza",
+    "fullDestination": "Cruz Rueda, Plaza",
     "truck": "BUL",
     "itinerary": [
       "Arquitecto Berges",
@@ -1172,8 +1183,8 @@
     "mapPdf": "./calles/Cuesta del Tocinillo 254.pdf"
   },
   {
-    "street": "Las Cumbres",
-    "fullDestination": "Las Cumbres",
+    "street": "Cumbres, Las",
+    "fullDestination": "Cumbres, Las",
     "truck": "BUP/BUL",
     "itinerary": [
       "Almendros Aguilar 57",
@@ -1184,8 +1195,8 @@
     "mapPdf": "./calles/Cumbres, Las 255.pdf"
   },
   {
-    "street": "Plaza Curtidores",
-    "fullDestination": "Plaza Curtidores",
+    "street": "Curtidores, Plaza",
+    "fullDestination": "Curtidores, Plaza",
     "truck": "BUL",
     "itinerary": [
       "Avda. Ejercito Español",
@@ -1214,8 +1225,8 @@
     "mapPdf": "./calles/Dean de la Fuente Gonzalez 258.pdf"
   },
   {
-    "street": "Plaza Dean Maza",
-    "fullDestination": "Plaza Dean Maza",
+    "street": "Dean Maza, Plaza",
+    "fullDestination": "Dean Maza, Plaza",
     "truck": "BUP",
     "itinerary": [
       "Plaza de La",
@@ -1322,8 +1333,8 @@
     "mapPdf": "./calles/Doctor Benedicto, 1ª Travesía 267.pdf"
   },
   {
-    "street": "Plaza del Doctor Blanco Nájera",
-    "fullDestination": "Plaza del Doctor Blanco Nájera",
+    "street": "Doctor Blanco Nájera, Plaza del",
+    "fullDestination": "Doctor Blanco Nájera, Plaza del",
     "truck": "BUL",
     "itinerary": [
       "Avda. Ejercito Español",
@@ -1806,8 +1817,8 @@
     "mapPdf": "./calles/Emilia 300.pdf"
   },
   {
-    "street": "Plaza del Empresario Diego Torres",
-    "fullDestination": "Plaza del Empresario Diego Torres",
+    "street": "Empresario Diego Torres, Plaza del",
+    "fullDestination": "Empresario Diego Torres, Plaza del",
     "truck": "BUP",
     "itinerary": [
       "Avda. de Andalucía",
@@ -1873,8 +1884,8 @@
     "mapPdf": "./calles/Eras de Santana 306.pdf"
   },
   {
-    "street": "La Ermita",
-    "fullDestination": "La Ermita",
+    "street": "Ermita, La",
+    "fullDestination": "Ermita, La",
     "truck": "BUL",
     "itinerary": [
       "(Valdeastillas)",
@@ -1886,8 +1897,8 @@
     "mapPdf": "./calles/Ermita, La 306-2.pdf"
   },
   {
-    "street": "Calle Escalerillas",
-    "fullDestination": "Calle Escalerillas (La Magdalena)",
+    "street": "Escalerillas",
+    "fullDestination": "Escalerillas, calle (La Magdalena) BUL",
     "truck": "BUL",
     "itinerary": [
       "Otra Ruta",
@@ -1903,8 +1914,8 @@
     "mapPdf": "./calles/Escalerillas 307.pdf"
   },
   {
-    "street": "Plaza de las Escalerillas",
-    "fullDestination": "Plaza de las Escalerillas",
+    "street": "Escalerillas, Plaza de las",
+    "fullDestination": "Escalerillas, Plaza de las",
     "truck": "BUL",
     "itinerary": [
       "Otra Ruta",
@@ -1947,8 +1958,8 @@
     "mapPdf": "./calles/Escuderos 310.pdf"
   },
   {
-    "street": "Los Esparteros",
-    "fullDestination": "Los Esparteros (Pol. Ind. Llanos del Valle)",
+    "street": "Esparteros, Los",
+    "fullDestination": "Esparteros, Los (Pol. Ind. Llanos del Valle)",
     "truck": "BUP",
     "itinerary": [
       "Avda. de Madrid",
@@ -2062,8 +2073,8 @@
     "mapPdf": "./calles/Federico de Mendizabal 319.pdf"
   },
   {
-    "street": "Plaza de Federico García Lorca",
-    "fullDestination": "Plaza de Federico García Lorca",
+    "street": "Federico García Lorca, Plaza de",
+    "fullDestination": "Federico García Lorca, Plaza de",
     "truck": "BUP",
     "itinerary": [
       "Avenida de Andalucía",
@@ -2322,8 +2333,8 @@
     "mapPdf": "./calles/Fuente de Don Diego 340.pdf"
   },
   {
-    "street": "Travesía Fuente de Don Diego",
-    "fullDestination": "Travesía Fuente de Don Diego (El Recinto)",
+    "street": "Fuente de Don Diego, Travesía",
+    "fullDestination": "Fuente de Don Diego, Travesía (El Recinto)",
     "truck": "BUP",
     "itinerary": [
       "Bernabé Soriano",
@@ -2630,7 +2641,7 @@
     "mapPdf": "./calles/General Castaños 361.pdf"
   },
   {
-    "street": "Travesía General Castaños",
+    "street": "General Castaños, Travesía",
     "fullDestination": "General Castaños, Travesía (Belén) BUL",
     "truck": "BUL",
     "itinerary": [
@@ -2647,8 +2658,8 @@
     "mapPdf": "./calles/General Castaños, Travesía 360.pdf"
   },
   {
-    "street": "La Gloria",
-    "fullDestination": "La Gloria",
+    "street": "Gloria, La",
+    "fullDestination": "Gloria, La",
     "truck": "BUL/BUP",
     "itinerary": [
       "La Gloria (La Glorieta)",
@@ -2780,8 +2791,8 @@
     "mapPdf": "./calles/Granada Puente Tablas 371.pdf"
   },
   {
-    "street": "La Granja",
-    "fullDestination": "La Granja (Santa Isabel)",
+    "street": "Granja, La",
+    "fullDestination": "Granja, La (Santa Isabel)",
     "truck": "BUP",
     "itinerary": [
       "Juanito Valderrama",
@@ -2795,8 +2806,8 @@
     "mapPdf": "./calles/Granja, La 372.pdf"
   },
   {
-    "street": "El Greco",
-    "fullDestination": "El Greco (San Felipe)",
+    "street": "Greco, el",
+    "fullDestination": "Greco, El (San Felipe)",
     "truck": "BUL",
     "itinerary": [
       "La Unidad nº 6 SI PASA",
@@ -2883,8 +2894,8 @@
     "mapPdf": "./calles/Guatemala 377.pdf"
   },
   {
-    "street": "La Guita",
-    "fullDestination": "La Guita (Santa Isabel)",
+    "street": "Guita, La",
+    "fullDestination": "Guita, La (Santa Isabel)",
     "truck": "BUP",
     "itinerary": [
       "Juanito Valderrama",
@@ -2898,8 +2909,8 @@
     "mapPdf": "./calles/Guita, La 378.pdf"
   },
   {
-    "street": "El Haya",
-    "fullDestination": "El Haya (Fuentezuelas 2ª Fase)",
+    "street": "Haya, El",
+    "fullDestination": "Haya, El (Fuentezuelas 2ª Fase)",
     "truck": "BUP",
     "itinerary": [
       "Coger el lateral de Avda. de Los Aparejadores",
@@ -2911,8 +2922,8 @@
     "mapPdf": "./calles/Haya, El 379.pdf"
   },
   {
-    "street": "Plaza Hemeregildo Terrados",
-    "fullDestination": "Plaza Hemeregildo Terrados",
+    "street": "Hemeregildo Terrados, Plaza",
+    "fullDestination": "Hemeregildo Terrados, Plaza",
     "truck": "BUP",
     "itinerary": [
       "Avda. de Andalucía",
@@ -3043,8 +3054,8 @@
     "mapPdf": "./calles/Herrerías 388.pdf"
   },
   {
-    "street": "Los Herreros",
-    "fullDestination": "Los Herreros (Pol. Ind. Llanos del Valle)",
+    "street": "Herreros, Los",
+    "fullDestination": "Herreros, Los (Pol. Ind. Llanos del Valle)",
     "truck": "BUP",
     "itinerary": [
       "Avda. de Madrid",
@@ -3068,8 +3079,8 @@
     "mapPdf": "./calles/Hervás 391.pdf"
   },
   {
-    "street": "Las Higueras",
-    "fullDestination": "Las Higueras",
+    "street": "Higueras, Las",
+    "fullDestination": "Higueras, Las",
     "truck": "BUP/BUL",
     "itinerary": [
       "Se puede hacer toda con BUP desde Dr. Eduardo Arroyo",
@@ -3343,8 +3354,8 @@
     "mapPdf": "./calles/Huerta de la rosa 409-2.pdf"
   },
   {
-    "street": "Las Huertas",
-    "fullDestination": "Las Huertas",
+    "street": "Huertas, Las",
+    "fullDestination": "Huertas, Las",
     "truck": "BUL",
     "itinerary": [
       "Castilla",
@@ -3422,8 +3433,8 @@
     "mapPdf": "./calles/Ignacio Figueroa 413.pdf"
   },
   {
-    "street": "Plaza de la Igualdad",
-    "fullDestination": "Plaza de la Igualdad (Peñamefecit)",
+    "street": "Igualdad, Plaza de La",
+    "fullDestination": "Igualdad, Plaza de La (Peñamefecit)",
     "truck": "BUP",
     "itinerary": [
       "Avenida de Andalucía",
@@ -3619,7 +3630,7 @@
     "mapPdf": "./calles/Jacinto Higueras 422.pdf"
   },
   {
-    "street": "Plaza Jaén por La Paz",
+    "street": "Jaén por La Paz, Plaza",
     "fullDestination": "Jaén por La Paz, Plaza BUP",
     "truck": "BUP",
     "itinerary": [
@@ -3667,8 +3678,8 @@
     "mapPdf": "./calles/Jardín Villa Rosario 427.pdf"
   },
   {
-    "street": "Travesía Jardín Villa Rosario",
-    "fullDestination": "Travesía Jardín Villa Rosario (Alcantarilla)",
+    "street": "Jardín Villa Rosario, Travesía",
+    "fullDestination": "Jardín Villa Rosario, Travesía (Alcantarilla)",
     "truck": "BUL",
     "itinerary": [
       "Ejido de la Alcantarilla o Senda de los Huertos",
@@ -3680,8 +3691,8 @@
     "mapPdf": "./calles/Jardín Villa Rosario, Travesía 428.pdf"
   },
   {
-    "street": "Plaza de los Jardinillos",
-    "fullDestination": "Plaza de los Jardinillos",
+    "street": "Jardinillos, Plaza de Los",
+    "fullDestination": "Jardinillos, Plaza de Los",
     "truck": "BUP",
     "itinerary": [
       "Paseo de La Estación",
@@ -4086,7 +4097,7 @@
     "fullDestination": "La cuna, Jaén jardín del Perú",
     "truck": "BUL",
     "itinerary": [
-      "La Cuna",
+      "Cuna, La",
       "Jaén jardín del Perú (junto a BAÑOS ÁRABES)",
       "La unidad nº 6 NO PASA",
       "Mejor ruta",
@@ -4296,13 +4307,13 @@
     "mapPdf": "./calles/Luis Quiros Medina, Plazoleta 472.pdf"
   },
   {
-    "street": "La Luna",
-    "fullDestination": "La Luna",
+    "street": "Luna La",
+    "fullDestination": "Luna La",
     "truck": "BUP/BUL",
     "itinerary": [
       "Virgen de la Cabeza",
       "Baeza",
-      "La Luna",
+      "La Luna BUL BUP",
       "Avda. de Madrid",
       "Maestro Cebrián",
       "Nuestra Sra. del Perpetuo Socorro",
@@ -4313,8 +4324,8 @@
     "mapPdf": "./calles/Luna La 473.pdf"
   },
   {
-    "street": "Plaza de la Luna",
-    "fullDestination": "Plaza de la Luna (Santa Mª del Valle)",
+    "street": "Luna Plaza de La",
+    "fullDestination": "Luna Plaza de la (Santa Mª del Valle)",
     "truck": "BUP",
     "itinerary": [
       "Avenida de Ruiz Jiménez",
@@ -4329,8 +4340,8 @@
     "mapPdf": "./calles/Luna Plaza de La 474.pdf"
   },
   {
-    "street": "Plaza Luz del Valle",
-    "fullDestination": "Plaza Luz del Valle (Polígono del Valle)",
+    "street": "Luz del Valle, Plaza",
+    "fullDestination": "Luz del Valle, Plaza (Polígono del Valle)",
     "truck": "BUP",
     "itinerary": [
       "Avenida de Andalucía",
@@ -4343,8 +4354,8 @@
     "mapPdf": "./calles/Luz del Valle, Plaza 475.pdf"
   },
   {
-    "street": "Plaza de la Macarena",
-    "fullDestination": "Plaza de la Macarena",
+    "street": "Macarena, Plaza de La",
+    "fullDestination": "Macarena, Plaza de La",
     "truck": "BUP",
     "itinerary": [
       "Barrio El tomillo",
@@ -4428,8 +4439,8 @@
     "mapPdf": "./calles/Madre Teresa de Calcuta 480.pdf"
   },
   {
-    "street": "Calle del Madrigal",
-    "fullDestination": "Calle del Madrigal",
+    "street": "Madrigal, calle del",
+    "fullDestination": "Madrigal, calle del",
     "truck": "BUL",
     "itinerary": [
       "(Valdeastillas)",
@@ -4612,7 +4623,7 @@
     "fullDestination": "Magdalena Plaza de la",
     "truck": "BUL",
     "itinerary": [
-      "Plaza de la Magdalena (La Magdalena)",
+      "Magdalena, Plaza de la (La Magdalena)",
       "Punto de agua",
       "Ctra. Córdoba",
       "Molino Condesa",
@@ -5044,7 +5055,7 @@
       "Calle Conde",
       "Circunvalación nº 88",
       "Circunvalació",
-      "Plaza de la Merced",
+      "Merced, plaza de La",
       "Mejor ruta",
       "Arco Puerta de Granada",
       "Almendros A"
@@ -5225,8 +5236,8 @@
     "mapPdf": "./calles/Millán de Priego 530.pdf"
   },
   {
-    "street": "Las Minas",
-    "fullDestination": "Las Minas",
+    "street": "Minas, Las",
+    "fullDestination": "Minas, Las",
     "truck": "BUL",
     "itinerary": [
       "Avda. Ejercito Español"
@@ -5287,8 +5298,8 @@
     "mapPdf": "./calles/Molino de la Alcantarilla 534.pdf"
   },
   {
-    "street": "Los Molinos",
-    "fullDestination": "Los Molinos",
+    "street": "Molinos, Los",
+    "fullDestination": "Molinos, Los",
     "truck": "BUL",
     "itinerary": [
       "Paseo de La Estación",
@@ -5445,8 +5456,8 @@
     "mapPdf": "./calles/Naranjo 543.pdf"
   },
   {
-    "street": "Plaza de los Naranjos",
-    "fullDestination": "Plaza de los Naranjos",
+    "street": "Naranjos, Plaza de los",
+    "fullDestination": "Naranjos, Plaza de los",
     "truck": "BUL",
     "itinerary": [
       "Bernabé Soriano",
@@ -5711,7 +5722,7 @@
   },
   {
     "street": "Obispo García de Castro",
-    "fullDestination": "Plaza Obispo García de Castro (junto a Plaza de Toros)",
+    "fullDestination": "Obispo García de Castro, Plaza (junto a Plaza de Toros)",
     "truck": "BUP",
     "itinerary": [
       "Avenida de Madrid",
@@ -5980,8 +5991,8 @@
     "mapPdf": "./calles/Pais Vasco 579.pdf"
   },
   {
-    "street": "Las Palmas",
-    "fullDestination": "Las Palmas",
+    "street": "Palmas, Las",
+    "fullDestination": "Palmas, Las",
     "truck": "BUL",
     "itinerary": [
       "Sin itinerario extraído automáticamente"
@@ -6096,8 +6107,8 @@
     "mapPdf": "./calles/Parque María Auxiliadora 588.pdf"
   },
   {
-    "street": "La Parra",
-    "fullDestination": "La Parra",
+    "street": "Parra, La",
+    "fullDestination": "Parra, La",
     "truck": "BUL/BUP",
     "itinerary": [
       "Doctor Eduardo Arroyo",
@@ -6156,8 +6167,8 @@
     "mapPdf": "./calles/Pasaje Maza 602.pdf"
   },
   {
-    "street": "Plaza del Paso",
-    "fullDestination": "Plaza del Paso",
+    "street": "Paso, Plaza del",
+    "fullDestination": "Paso, Plaza del",
     "truck": "BUL",
     "itinerary": [
       "Circunvalación",
@@ -6168,8 +6179,8 @@
     "mapPdf": "./calles/Paso, Plaza del 603.pdf"
   },
   {
-    "street": "Plaza de las Pastiras",
-    "fullDestination": "Plaza de las Pastiras (Las protegidas)",
+    "street": "Pastiras, Plaza de las",
+    "fullDestination": "Pastiras, Plaza de las (Las protegidas)",
     "truck": "BUL/BUP",
     "itinerary": [
       "BUP+BUL",
@@ -6196,8 +6207,8 @@
     "mapPdf": "./calles/Patrocinio de Biedma 605.pdf"
   },
   {
-    "street": "La Paz",
-    "fullDestination": "La Paz",
+    "street": "Paz, La",
+    "fullDestination": "Paz, La",
     "truck": "BUL",
     "itinerary": [
       "Carrera de Jesús",
@@ -6300,7 +6311,7 @@
   },
   {
     "street": "Peñamefecit",
-    "fullDestination": "Calle Peñamefecit (Peñamefecit)",
+    "fullDestination": "Peñamefecit, calle (Peñamefecit)",
     "truck": "BUL",
     "itinerary": [
       "Iglesia San",
@@ -6763,8 +6774,8 @@
     "mapPdf": "./calles/Pizarro 643.pdf"
   },
   {
-    "street": "Plaza de los Planetas",
-    "fullDestination": "Plaza de los Planetas",
+    "street": "Planetas, Plaza de los",
+    "fullDestination": "Planetas, Plaza de los",
     "truck": "BUP/BUL",
     "itinerary": [
       "Avenida de Andalucía",
@@ -6780,8 +6791,8 @@
     "mapPdf": "./calles/Planetas, Plaza de los 644.pdf"
   },
   {
-    "street": "La Plata",
-    "fullDestination": "La Plata (San Ildefonso)",
+    "street": "Plata, La",
+    "fullDestination": "Plata, La (San Ildefonso)",
     "truck": "BUL",
     "itinerary": [
       "Alamos o Bernabé Soriano",
@@ -6839,7 +6850,7 @@
     "mapPdf": "./calles/Plaza Nueva 555.pdf"
   },
   {
-    "street": "La Poceta",
+    "street": "Poceta, La",
     "fullDestination": "Poceta, La (Santa Isabel) BUL",
     "truck": "BUL",
     "itinerary": [
@@ -6895,7 +6906,7 @@
   },
   {
     "street": "Poligono Industrial de Quiebracantaros",
-    "fullDestination": "Polígono Industrial de Quiebracantaros (Carretera de La Guardia)",
+    "fullDestination": "Polígono Industrial de Quiebracantaros(Carretera de La Guardia)",
     "truck": "BUP",
     "itinerary": [
       "Polígono industrial de",
@@ -6968,8 +6979,8 @@
     "mapPdf": "./calles/Portillo de San Jerónimo 659.pdf"
   },
   {
-    "street": "Plaza Portillo de San Jerónimo",
-    "fullDestination": "Plaza Portillo de San Jerónimo",
+    "street": "Portillo de San Jerónimo, Plaza",
+    "fullDestination": "Portillo de San Jerónimo, Plaza",
     "truck": "BUP",
     "itinerary": [
       "Avenida de Granada",
@@ -6983,7 +6994,7 @@
     "mapPdf": "./calles/Portillo de San Jerónimo, Plaza 660.pdf"
   },
   {
-    "street": "Plaza del Portón de los Leones",
+    "street": "Portón de los Leones, Plaza del",
     "fullDestination": "Portón de Los Leones, Plaza del BUL",
     "truck": "BUL",
     "itinerary": [
@@ -7008,8 +7019,8 @@
     "mapPdf": "./calles/Positillo 662.pdf"
   },
   {
-    "street": "Plaza el Pósito",
-    "fullDestination": "Plaza el Pósito",
+    "street": "Pósito, Plaza El",
+    "fullDestination": "Pósito, Plaza El",
     "truck": "BUP/BUL",
     "itinerary": [
       "Plaza de La",
@@ -7191,8 +7202,8 @@
     "mapPdf": "./calles/Puerto Alto 675.pdf"
   },
   {
-    "street": "Plaza Purísima Concepción",
-    "fullDestination": "Plaza Purísima Concepción",
+    "street": "Purísima Concepción, Plaza",
+    "fullDestination": "Purísima Concepción, Plaza",
     "truck": "BUL/BUP",
     "itinerary": [
       "Campanas",
@@ -7226,7 +7237,7 @@
   },
   {
     "street": "Quijote",
-    "fullDestination": "El Quijote (Peñamefecit)",
+    "fullDestination": "Quijote, El (Peñamefecit)",
     "truck": "BUL",
     "itinerary": [
       "Avenida de Andalucía",
@@ -7303,8 +7314,8 @@
     "mapPdf": "./calles/Real 682.pdf"
   },
   {
-    "street": "Calle del Real Jaén",
-    "fullDestination": "Calle del Real Jaén (San Roque)",
+    "street": "Real Jaén, calle del",
+    "fullDestination": "Real Jaén, calle del (San Roque)",
     "truck": "BUL",
     "itinerary": [
       "Avda. de Madrid",
@@ -7318,7 +7329,7 @@
   },
   {
     "street": "Reconciliación",
-    "fullDestination": "La Reconciliación (Peñamefecit)",
+    "fullDestination": "Reconciliación, La (Peñamefecit)",
     "truck": "BUL",
     "itinerary": [
       "Avenida de Andalucía",
@@ -7343,7 +7354,7 @@
     "mapPdf": "./calles/Región de Murcia 685.pdf"
   },
   {
-    "street": "Plaza Reina de La Amargura",
+    "street": "Reina de La Amargura, Plaza",
     "fullDestination": "Reina de La Amargura, Plaza Junto a la iglesia del Salvador en Peñamefecit",
     "truck": "BUP",
     "itinerary": [
@@ -7667,8 +7678,8 @@
     "mapPdf": "./calles/Ronda del Valle 706.pdf"
   },
   {
-    "street": "Plaza de los Rosales",
-    "fullDestination": "Plaza de los Rosales",
+    "street": "Rosales, Plaza de Los",
+    "fullDestination": "Rosales, Plaza de Los",
     "truck": "BUL/BUP",
     "itinerary": [
       "Arquitecto Berges",
@@ -7710,8 +7721,8 @@
     "mapPdf": "./calles/Rostro 709-1.pdf"
   },
   {
-    "street": "Plaza Rostro",
-    "fullDestination": "Plaza del Rostro",
+    "street": "Rostro, plaza",
+    "fullDestination": "Rostro, plaza del",
     "truck": "BUL",
     "itinerary": [
       "Castilla",
@@ -7878,8 +7889,8 @@
     "mapPdf": "./calles/Salvador Vicente de La Torre Travesía 718.pdf"
   },
   {
-    "street": "Plaza de San Agustín",
-    "fullDestination": "Plaza de San Agustín",
+    "street": "San Agustín, Plaza de",
+    "fullDestination": "San Agustín, Plaza de",
     "truck": "BUL",
     "itinerary": [
       "Millan de Priego",
@@ -7974,8 +7985,8 @@
     "mapPdf": "./calles/San Balbino 728.pdf"
   },
   {
-    "street": "Calle de San Bartolomé",
-    "fullDestination": "Calle de San Bartolomé",
+    "street": "San Bartolomé, calle de",
+    "fullDestination": "San Bartolomé, calle de",
     "truck": "BUL",
     "itinerary": [
       "C. San Bartolomé",
@@ -7990,8 +8001,8 @@
     "mapPdf": "./calles/San Bartolomé, calle de 729.pdf"
   },
   {
-    "street": "Plaza San Bartolomé",
-    "fullDestination": "Plaza de San Bartolomé",
+    "street": "San Bartolomé, Plaza",
+    "fullDestination": "San Bartolomé, Plaza de",
     "truck": "BUL",
     "itinerary": [
       "Doctor Eduardo Arroyo",
@@ -8024,8 +8035,8 @@
     "mapPdf": "./calles/San Benito, callejón de 731.pdf"
   },
   {
-    "street": "Plaza de San Bernardo",
-    "fullDestination": "Plaza de San Bernardo",
+    "street": "San Bernardo, Plaza de",
+    "fullDestination": "San Bernardo, Plaza de",
     "truck": "BUL",
     "itinerary": [
       "La Unidad nº 6 SI PASA",
@@ -8110,8 +8121,8 @@
     "mapPdf": "./calles/San Felipe 738.pdf"
   },
   {
-    "street": "Plaza de San Felix",
-    "fullDestination": "Plaza de San Felix (San Ildefonso-Recinto)",
+    "street": "San Felix, Plaza de",
+    "fullDestination": "San Felix, Plaza de (San Ildefonso-Recinto)",
     "truck": "BUL",
     "itinerary": [
       "Alamos o Bernabé Soriano",
@@ -8159,8 +8170,8 @@
     "mapPdf": "./calles/San Francisco de Asís 741.pdf"
   },
   {
-    "street": "Plaza de San Francisco",
-    "fullDestination": "Plaza de San Francisco",
+    "street": "San Francisco, Plaza de",
+    "fullDestination": "San Francisco, Plaza de",
     "truck": "BUP/BUL",
     "itinerary": [
       "Paseo de La Estación",
@@ -8253,8 +8264,8 @@
     "mapPdf": "./calles/San Juan 750.pdf"
   },
   {
-    "street": "Plaza San Juan de Dios",
-    "fullDestination": "Plaza San Juan de Dios (La Magdalena)",
+    "street": "San Juan de Dios, plaza",
+    "fullDestination": "San Juan de Dios, Plaza (La Magdalena)",
     "truck": "BUL",
     "itinerary": [
       "Otra Ruta",
@@ -8270,11 +8281,11 @@
     "mapPdf": "./calles/San Juan de Dios, plaza 747.pdf"
   },
   {
-    "street": "Calle San Juan de Dios",
-    "fullDestination": "Calle San Juan de Dios",
+    "street": "San Juan de Dios,calle",
+    "fullDestination": "San Juan de Dios,calle",
     "truck": "BUL",
     "itinerary": [
-      "Calle San Juan de Dios (La Magdalena)",
+      "San Juan de Dios, calle (La Magdalena)",
       "Otra Ruta",
       "Pza.Santa Luisa de Marillac",
       "La unidad nº 6 NO PASA",
@@ -8362,8 +8373,8 @@
     "mapPdf": "./calles/San miguel calle de 753.pdf"
   },
   {
-    "street": "Cuesta de San miguel",
-    "fullDestination": "Cuesta de San Miguel (La Magdalena)",
+    "street": "San miguel, Cuesta de",
+    "fullDestination": "San Miguel, Cuesta de (La Magdalena)",
     "truck": "BUL",
     "itinerary": [
       "La unidad nº 6 NO PASA BUL",
@@ -8379,12 +8390,12 @@
     "mapPdf": "./calles/San miguel, Cuesta de 251.pdf"
   },
   {
-    "street": "Plaza de San Miguel",
-    "fullDestination": "Plaza de San Miguel",
+    "street": "San Miguel, plaza de",
+    "fullDestination": "San Miguel, plaza de",
     "truck": "No indicado",
     "itinerary": [
       "Balboa",
-      "Plaza San Miguel (La Magdalena)",
+      "San Miguel, Plaza (La Magdalena)",
       "Autobomba ligera",
       "Punto de agua",
       "Plaza Sta. Luisa de Marillac",
@@ -8489,8 +8500,8 @@
     "mapPdf": "./calles/San Ramon 762.pdf"
   },
   {
-    "street": "Plaza de San Roque",
-    "fullDestination": "Plaza de San Roque",
+    "street": "San Roque, Plaza de",
+    "fullDestination": "San Roque, Plaza de",
     "truck": "BUP/BUL",
     "itinerary": [
       "Baeza",
@@ -8708,8 +8719,8 @@
     "mapPdf": "./calles/Santa Elena 778.pdf"
   },
   {
-    "street": "Plaza de Santa Isabel",
-    "fullDestination": "Plaza de Santa Isabel",
+    "street": "Santa Isabel, Plaza de",
+    "fullDestination": "Santa Isabel, Plaza de",
     "truck": "BUL/BUP",
     "itinerary": [
       "Avenida de Andalucía",
@@ -8733,8 +8744,8 @@
     "mapPdf": "./calles/Santa Joaquina de Veldruna 780.pdf"
   },
   {
-    "street": "Plaza Santa Luisa de Marillac",
-    "fullDestination": "Plaza Santa Luisa de Marillac (Baños Árabes)",
+    "street": "Santa Luisa de Marillac, Plaza",
+    "fullDestination": "Santa Luisa de Marillac, Plaza (Baños Árabes)",
     "truck": "BUL",
     "itinerary": [
       "Ctra. Córdoba",
@@ -8787,8 +8798,8 @@
     "mapPdf": "./calles/Santa Úrsula 784.pdf"
   },
   {
-    "street": "Plaza de Santiago",
-    "fullDestination": "Plaza Santiago",
+    "street": "Santiago, Plaza de",
+    "fullDestination": "Santiago, Plaza",
     "truck": "BUL",
     "itinerary": [
       "Juanito Valderrama",
@@ -8848,8 +8859,8 @@
     "mapPdf": "./calles/Santo Domingo Bajo 789.pdf"
   },
   {
-    "street": "Plaza de Santo Domingo",
-    "fullDestination": "Plaza de Santo Domingo",
+    "street": "Santo Domingo, Plaza de",
+    "fullDestination": "Santo Domingo, Plaza de",
     "truck": "BUL",
     "itinerary": [
       "Balboa",
@@ -9283,8 +9294,8 @@
     "mapPdf": "./calles/Tejares 821.pdf"
   },
   {
-    "street": "Los Tejeros",
-    "fullDestination": "Los Tejeros (Pol. Ind. Llanos del Valle)",
+    "street": "Tejeros, Los",
+    "fullDestination": "Tejeros, Los (Pol. Ind. Llanos del Valle)",
     "truck": "BUP",
     "itinerary": [
       "Avda. de Madrid",
@@ -9465,8 +9476,8 @@
     "mapPdf": "./calles/Tomillo 834.pdf"
   },
   {
-    "street": "Los Torneros",
-    "fullDestination": "Los Torneros (Pol. Ind. Llanos del Valle)",
+    "street": "Torneros, Los",
+    "fullDestination": "Torneros, Los (Pol. Ind. Llanos del Valle)",
     "truck": "BUP",
     "itinerary": [
       "Avda. de Madrid",
@@ -9539,8 +9550,8 @@
     "mapPdf": "./calles/Torreperea 839.pdf"
   },
   {
-    "street": "Los Torres",
-    "fullDestination": "Los Torres",
+    "street": "Torres, Los",
+    "fullDestination": "Torres, Los",
     "truck": "BUL",
     "itinerary": [
       "Castilla",
@@ -9579,8 +9590,8 @@
     "mapPdf": "./calles/Triana 842.pdf"
   },
   {
-    "street": "Las trochas",
-    "fullDestination": "Las Trochas",
+    "street": "trochas, Las",
+    "fullDestination": "Trochas, Las",
     "truck": "BUL/BUP",
     "itinerary": [
       "Circunvalación (semáforo)"
@@ -9590,8 +9601,8 @@
     "mapPdf": "./calles/trochas, Las 843.pdf"
   },
   {
-    "street": "Plaza de Troyano Salaverri",
-    "fullDestination": "Plaza de Troyano Salaverri",
+    "street": "Troyano Salaverri, Plaza de",
+    "fullDestination": "Troyano Salaverri, Plaza de",
     "truck": "BUP",
     "itinerary": [
       "Avda. Andalucía",
@@ -9628,8 +9639,8 @@
     "mapPdf": "./calles/Unicef 846.pdf"
   },
   {
-    "street": "Plaza de Unión",
-    "fullDestination": "Plaza de Unión",
+    "street": "Unión, Plaza de",
+    "fullDestination": "Unión, Plaza de",
     "truck": "BUP",
     "itinerary": [
       "Avenida de Andalucía",
@@ -9642,8 +9653,8 @@
     "mapPdf": "./calles/Unión, Plaza de 847.pdf"
   },
   {
-    "street": "Avenida de la Universidad",
-    "fullDestination": "Avenida de la Universidad",
+    "street": "Universidad, Avenida de la",
+    "fullDestination": "Universidad, Avenida de la",
     "truck": "BUP",
     "itinerary": [
       "Carretera de Madrid"
@@ -9991,7 +10002,7 @@
     "mapPdf": "./calles/Villacarrillo 867.pdf"
   },
   {
-    "street": "Plaza de Villalobos",
+    "street": "Villalobos, Plaza de",
     "fullDestination": "Villalobos, Plaza de (Santa Isabel) BUL BUP",
     "truck": "BUL/BUP",
     "itinerary": [
@@ -10019,7 +10030,7 @@
     "mapPdf": "./calles/Virgen Blanca 869.pdf"
   },
   {
-    "street": "Plaza Virgen de Alharilla",
+    "street": "Virgen de Alharilla, Plaza",
     "fullDestination": "Virgen de Alharilla, Plaza Por el lateral de Antonio Pascual Acosta",
     "truck": "BUP",
     "itinerary": [
@@ -10036,8 +10047,8 @@
     "mapPdf": "./calles/Virgen de Alharilla, Plaza 870.pdf"
   },
   {
-    "street": "Plaza Virgen de Araceli",
-    "fullDestination": "Plaza Virgen de Araceli",
+    "street": "Virgen de Araceli, Plaza",
+    "fullDestination": "Virgen de Araceli, Plaza",
     "truck": "BUP",
     "itinerary": [
       "BUP-A",
@@ -10053,8 +10064,8 @@
     "mapPdf": "./calles/Virgen de Araceli, Plaza 871.pdf"
   },
   {
-    "street": "Plaza Virgen de Covadonga",
-    "fullDestination": "Plaza Virgen de Covadonga",
+    "street": "Virgen de Covadonga, Plaza",
+    "fullDestination": "Virgen de Covadonga, plaza",
     "truck": "BUP",
     "itinerary": [
       "BUP-A",
@@ -10087,8 +10098,8 @@
     "mapPdf": "./calles/Virgen de Cuadros calle 873.pdf"
   },
   {
-    "street": "Plaza Virgen de Fátima",
-    "fullDestination": "Plaza Virgen de Fátima",
+    "street": "Virgen de Fátima, Plaza",
+    "fullDestination": "Virgen de Fátima, Plaza",
     "truck": "BUP",
     "itinerary": [
       "Por el lateral de Antonio Pascual Acosta",
@@ -10104,8 +10115,8 @@
     "mapPdf": "./calles/Virgen de Fátima, Plaza 874.pdf"
   },
   {
-    "street": "Plaza Virgen de la Esperanza",
-    "fullDestination": "Plaza Virgen de la Esperanza",
+    "street": "Virgen de la Esperanza, Plaza",
+    "fullDestination": "Virgen de la Esperanza, Plaza",
     "truck": "BUP",
     "itinerary": [
       "Avenida de Andalucía",
@@ -10117,8 +10128,8 @@
     "mapPdf": "./calles/Virgen de la Esperanza, Plaza 877.pdf"
   },
   {
-    "street": "Plaza Virgen de la Estrella",
-    "fullDestination": "Plaza Virgen de la Estrella",
+    "street": "Virgen de la Estrella, Plaza",
+    "fullDestination": "Virgen de la Estrella, Plaza",
     "truck": "BUP",
     "itinerary": [
       "Por el lateral de Antonio Pascual Acosta",
@@ -10134,8 +10145,8 @@
     "mapPdf": "./calles/Virgen de la Estrella, Plaza 878.pdf"
   },
   {
-    "street": "Plaza Virgen de la Fuensanta",
-    "fullDestination": "Plaza Virgen de la Fuensanta",
+    "street": "Virgen de la Fuensanta, Plaza",
+    "fullDestination": "Virgen de la Fuensanta, plaza",
     "truck": "BUP",
     "itinerary": [
       "BUP-A",
@@ -10151,8 +10162,8 @@
     "mapPdf": "./calles/Virgen de la Fuensanta, Plaza 879.pdf"
   },
   {
-    "street": "Calle Virgen de la Victoria",
-    "fullDestination": "Calle Virgen de la Victoria",
+    "street": "Virgen de la Victoria, calle",
+    "fullDestination": "Virgen de la Victoria, calle",
     "truck": "BUP",
     "itinerary": [
       "Ctra. de Madrid",
@@ -10186,7 +10197,7 @@
   },
   {
     "street": "Virgen de Las Nieves",
-    "fullDestination": "Virgen de Las Nieves (Polígono del Valle)",
+    "fullDestination": "Virgen de Las Nieves(Polígono del Valle)",
     "truck": "BUP",
     "itinerary": [
       "Avenida de Madrid",
@@ -10197,8 +10208,8 @@
     "mapPdf": "./calles/Virgen de Las Nieves 885.pdf"
   },
   {
-    "street": "Plaza Virgen de Linarejos",
-    "fullDestination": "Plaza Virgen de Linarejos",
+    "street": "Virgen de Linarejos, Plaza",
+    "fullDestination": "Virgen de Linarejos, Plaza",
     "truck": "BUP",
     "itinerary": [
       "Por el lateral de Antonio Pascual Acosta",
@@ -10214,7 +10225,7 @@
     "mapPdf": "./calles/Virgen de Linarejos, Plaza 886.pdf"
   },
   {
-    "street": "Plaza Virgen de los Desamparados",
+    "street": "Virgen de los Desamparados, Plaza",
     "fullDestination": "Virgen de los Desamparados, Plaza BUP/AEA",
     "truck": "BUP",
     "itinerary": [
@@ -10231,8 +10242,8 @@
     "mapPdf": "./calles/Virgen de los Desamparados, Plaza 887.pdf"
   },
   {
-    "street": "Plaza Virgen de los Remedios",
-    "fullDestination": "Plaza Virgen de los Remedios",
+    "street": "Virgen de los Remedios, Plaza",
+    "fullDestination": "Virgen de los Remedios, plaza",
     "truck": "BUP",
     "itinerary": [
       "BUP-A",
@@ -10265,8 +10276,8 @@
     "mapPdf": "./calles/Virgen de los Reyes 889.pdf"
   },
   {
-    "street": "Plaza Virgen de Lurdes",
-    "fullDestination": "Plaza Virgen de Lurdes",
+    "street": "Virgen de Lurdes , Plaza",
+    "fullDestination": "Virgen de Lurdes , Plaza",
     "truck": "BUL",
     "itinerary": [
       "La Unidad nº 6 SI PASA",
@@ -10307,8 +10318,8 @@
     "mapPdf": "./calles/Virgen de Tiscar 892.pdf"
   },
   {
-    "street": "Calle Virgen del Alcazar",
-    "fullDestination": "Calle Virgen del Alcazar",
+    "street": "Virgen del Alcazar, calle",
+    "fullDestination": "Virgen del Alcazar, calle",
     "truck": "BUP",
     "itinerary": [
       "Avenida de Andalucía",
@@ -10399,8 +10410,8 @@
     "mapPdf": "./calles/Virgen del Pilar 897.pdf"
   },
   {
-    "street": "Travesía Virgen del Pilar",
-    "fullDestination": "Travesía Virgen del Pilar (Santa Isabel)",
+    "street": "Virgen del Pilar, Travesía",
+    "fullDestination": "Virgen del Pilar, Travesía (Santa Isabel)",
     "truck": "BUP",
     "itinerary": [
       "San Lucas nº 33",
@@ -10416,8 +10427,8 @@
     "mapPdf": "./calles/Virgen del Pilar, Travesía 898.pdf"
   },
   {
-    "street": "Paseo Virgen del Rocío",
-    "fullDestination": "Paseo Virgen del Rocío",
+    "street": "Virgen del Rocío, Paseo",
+    "fullDestination": "Virgen del Rocío, Paseo",
     "truck": "BUP",
     "itinerary": [
       "Por Virgen del Alcazar",
@@ -10465,8 +10476,8 @@
     "mapPdf": "./calles/Virgen Milagrosa 901.pdf"
   },
   {
-    "street": "Travesía Virgen Milagrosa",
-    "fullDestination": "Travesía Virgen Milagrosa (Alcantarilla)",
+    "street": "Virgen Milagrosa, Travesía",
+    "fullDestination": "Virgen Milagrosa, Travesía (Alcantarilla)",
     "truck": "BUL",
     "itinerary": [
       "Circunvalación BUL",

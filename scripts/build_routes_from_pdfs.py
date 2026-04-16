@@ -7,7 +7,7 @@ import subprocess
 import unicodedata
 from pathlib import Path
 
-BASE = Path('/Users/victor/Desktop/CALLEJERO 2.0')
+BASE = Path('/Users/victor/Desktop/CALLEJERO 2.0/web')
 PDF_DIR = BASE / 'calles'
 OUT_JSON = BASE / 'data' / 'routes.json'
 
