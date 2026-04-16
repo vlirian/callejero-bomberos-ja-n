@@ -433,16 +433,24 @@ function setAdminUi() {
     adminToggle.textContent = "Salir admin";
     adminTools.classList.add("open");
     feedbackBox.style.display = "none";
+    if (reviewToggle) reviewToggle.style.display = "";
   } else {
     adminToggle.textContent = "Acceso admin";
     adminTools.classList.remove("open");
     adminPanel.classList.remove("open");
     feedbackBox.style.display = "block";
+    if (reviewToggle) reviewToggle.style.display = "none";
+    if (activeMode === "review") setActiveMode("consult");
   }
 }
 
 function setActiveMode(mode) {
-  activeMode = mode === "review" ? "review" : "consult";
+  const wantsReview = mode === "review";
+  if (wantsReview && !isAdmin) {
+    activeMode = "consult";
+  } else {
+    activeMode = wantsReview ? "review" : "consult";
+  }
   const reviewOn = activeMode === "review";
   reviewPanel.classList.toggle("open", reviewOn);
   consultToggle.classList.toggle("is-active", !reviewOn);
