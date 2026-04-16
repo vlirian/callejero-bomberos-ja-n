@@ -574,16 +574,37 @@ function ensureAdminUploadsDir() {
   }
 }
 
+function isPdfLikeFile(absPath) {
+  try {
+    const st = fs.statSync(absPath);
+    if (!st.isFile()) return false;
+    const fd = fs.openSync(absPath, 'r');
+    const buf = Buffer.alloc(4);
+    fs.readSync(fd, buf, 0, 4, 0);
+    fs.closeSync(fd);
+    return buf.toString('utf8') === '%PDF';
+  } catch {
+    return false;
+  }
+}
+
+function listPdfLikeFilesFromCalles() {
+  const mainDir = path.join(ROOT, 'calles');
+  if (!fs.existsSync(mainDir)) return [];
+  return fs
+    .readdirSync(mainDir)
+    .filter((name) => isPdfLikeFile(path.join(mainDir, name)))
+    .sort((a, b) => normalizeText(a).localeCompare(normalizeText(b), 'es'));
+}
+
 function tryFindPdfByName(name = '') {
   const needleRaw = String(name || '').trim();
   if (!needleRaw) return null;
   const needle = normalizeText(needleRaw);
   const candidates = [];
   const mainDir = path.join(ROOT, 'calles');
-  if (fs.existsSync(mainDir)) {
-    for (const f of fs.readdirSync(mainDir)) {
-      if (String(f).toLowerCase().endsWith('.pdf')) candidates.push(path.join(mainDir, f));
-    }
+  for (const f of listPdfLikeFilesFromCalles()) {
+    candidates.push(path.join(mainDir, f));
   }
   if (fs.existsSync(ADMIN_UPLOADS_DIR)) {
     for (const f of fs.readdirSync(ADMIN_UPLOADS_DIR)) {
@@ -608,21 +629,16 @@ function sanitizePdfFileName(value = '') {
 }
 
 function cleanStreetFromPdfName(name = '') {
-  const stem = path.basename(String(name || ''), path.extname(String(name || '')));
+  const stem = path.basename(String(name || ''));
   return String(stem)
+    .replace(/\.pdf\b/gi, ' ')
     .replace(/\s*\d+[\w().-]*\s*$/i, '')
     .replace(/\s{2,}/g, ' ')
     .trim();
 }
 
 function rebuildRoutesFromCallesDir() {
-  const dir = path.join(ROOT, 'calles');
-  const files = fs.existsSync(dir)
-    ? fs
-        .readdirSync(dir)
-        .filter((f) => String(f).toLowerCase().endsWith('.pdf'))
-        .sort((a, b) => normalizeText(a).localeCompare(normalizeText(b), 'es'))
-    : [];
+  const files = listPdfLikeFilesFromCalles();
   const entries = files.map((file) => {
     const street = cleanStreetFromPdfName(file) || file;
     return {
