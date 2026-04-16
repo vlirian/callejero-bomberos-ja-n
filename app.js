@@ -1175,6 +1175,10 @@ function renderMatch(entry) {
     <h2>${escapeHtml(displayDestination)}</h2>
     <strong>Itinerario:</strong>
     <ol class="route">${routeItems}</ol>
+    <p class="muted">
+      (Extraído automáticamente de las fichas. En caso de contener algún error, comunicarlo
+      <a href="#feedbackText" class="report-itinerary-error" data-street="${escapeHtml(displayDestination)}">aquí</a>.)
+    </p>
     ${mapBlock}
     <p class="muted"><strong>Zona:</strong> ${escapeHtml(zoneOf(entry))}</p>
     <p class="muted"><strong>Nota:</strong> ${escapeHtml(entry.notes)}</p>
@@ -1873,6 +1877,25 @@ async function init() {
   });
 
   result.addEventListener("click", async (event) => {
+    const reportLink = event.target.closest(".report-itinerary-error");
+    if (reportLink) {
+      event.preventDefault();
+      const street = String(reportLink.getAttribute("data-street") || currentEntry?.street || "").trim();
+      const base = `El plano de la callé "${street}" contiene los siguientes errores: `;
+      if (feedbackText) {
+        feedbackText.value = base;
+        feedbackText.focus();
+        const len = feedbackText.value.length;
+        try {
+          feedbackText.setSelectionRange(len, len);
+        } catch {}
+      }
+      if (feedbackBox && typeof feedbackBox.scrollIntoView === "function") {
+        feedbackBox.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      return;
+    }
+
     const btn = event.target.closest(".map-open, .map-overlay");
     if (!btn) return;
     const pdf = btn.getAttribute("data-map-pdf");
