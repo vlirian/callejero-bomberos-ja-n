@@ -404,6 +404,36 @@ function localStreetIndexCandidates(query) {
   return out;
 }
 
+function localRouteStreetCandidates(query) {
+  const q = normalizeText(String(query || '').replace(/\bcajen\b/gi, 'jaen'));
+  if (!q || q.length < 2) return [];
+  const routes = withOverrides();
+  const scored = [];
+  for (const row of routes) {
+    const raw = canonicalStreetName(String(row.street || row.fullDestination || '').trim());
+    if (!raw) continue;
+    const s = normalizeText(raw);
+    const ss = normalizeText(stripRoadPrefix(raw));
+    let score = -1;
+    if (s.startsWith(q)) score = 120 - (s.length - q.length);
+    else if (s.includes(q)) score = 100 - s.indexOf(q);
+    else if (ss.startsWith(q)) score = 95 - (ss.length - q.length);
+    else if (ss.includes(q)) score = 80 - ss.indexOf(q);
+    if (score >= 0) scored.push({ street: raw, score });
+  }
+  scored.sort((a, b) => b.score - a.score);
+  const out = [];
+  const seen = new Set();
+  for (const row of scored) {
+    const key = normalizeText(row.street);
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    out.push(row.street);
+    if (out.length >= 20) break;
+  }
+  return out;
+}
+
 function parseCookies(req) {
   const raw = req.headers.cookie || '';
   return Object.fromEntries(
@@ -574,9 +604,19 @@ const server = http.createServer(async (req, res) => {
 
   if (url === '/api/street-index' && req.method === 'GET') {
     const q = parsedUrl.searchParams.get('q') || '';
-    const local = localStreetIndexCandidates(q);
+    const localIndex = localStreetIndexCandidates(q);
+    const localRoutes = localRouteStreetCandidates(q);
+    const local = [];
+    const localSeen = new Set();
+    for (const s of [...localRoutes, ...localIndex]) {
+      const key = normalizeText(s);
+      if (!key || localSeen.has(key)) continue;
+      localSeen.add(key);
+      local.push(s);
+      if (local.length >= 20) break;
+    }
     if (local.length >= 8) {
-      return json(res, 200, { streets: local, source: 'local_pdf' });
+      return json(res, 200, { streets: local, source: 'local_routes+street_index' });
     }
     const remote = await fetchJaenStreetCandidates(q);
     const merged = [];
@@ -588,7 +628,7 @@ const server = http.createServer(async (req, res) => {
       merged.push(s);
       if (merged.length >= 20) break;
     }
-    return json(res, 200, { streets: merged, source: local.length ? 'local_pdf+osm' : 'osm' });
+    return json(res, 200, { streets: merged, source: local.length ? 'local_routes+street_index+osm' : 'osm' });
   }
 
   if (url === '/api/route-steps' && req.method === 'GET') {
