@@ -24,6 +24,7 @@ const mapsFrame = document.getElementById("mapsFrame");
 const streetViewFrame = document.getElementById("streetViewFrame");
 const mapsOpen = document.getElementById("mapsOpen");
 const mapsTitle = document.getElementById("mapsTitle");
+const mapsRouteNote = document.getElementById("mapsRouteNote");
 const mapsAlt = document.getElementById("mapsAlt");
 const mapsAltList = document.getElementById("mapsAltList");
 const mapsSteps = document.getElementById("mapsSteps");
@@ -942,7 +943,7 @@ function inferArrivalZoom(destination = "") {
   return 14;
 }
 
-function renderGoogleMapsRoute(destination, title = "Ruta en Google Maps", zoomOverride = null) {
+function renderGoogleMapsRoute(destination, title = "Ruta en Google Maps", zoomOverride = null, hasFicha = false) {
   const dest = formatDestinationForMaps(destination);
   if (!dest) {
     mapsAnnex.classList.add("hidden");
@@ -959,6 +960,15 @@ function renderGoogleMapsRoute(destination, title = "Ruta en Google Maps", zoomO
   mapsFrame.src = embedUrl;
   mapsOpen.href = openUrl;
   mapsTitle.textContent = title;
+  if (mapsRouteNote) {
+    if (hasFicha) {
+      mapsRouteNote.innerHTML =
+        'Este itinerario se ha extraido de google maps, se recomienda concultar la ficha de Chico <a href="#result">aqui</a>.';
+    } else {
+      mapsRouteNote.textContent =
+        "Este itinerario se ha extraido de google maps, actualmente no dispone de ficha personalizada";
+    }
+  }
   mapsAnnex.classList.remove("hidden");
   mapsSteps.classList.remove("hidden");
   mapsStepsList.innerHTML = "<li>Cargando indicaciones...</li>";
@@ -1192,7 +1202,8 @@ function renderMatch(entry) {
         : ""
     }
   `;
-  renderGoogleMapsRoute(entry.fullDestination || entry.street, "Ruta desde Parque de Bomberos de Jaén");
+  const hasFicha = Boolean(mapPdfUrl || mapImageUrl);
+  renderGoogleMapsRoute(entry.fullDestination || entry.street, "Ruta desde Parque de Bomberos de Jaén", null, hasFicha);
   mapsAlt.classList.add("hidden");
   mapsAltList.innerHTML = "";
 }
