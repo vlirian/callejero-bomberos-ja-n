@@ -1136,15 +1136,11 @@ function safeAssetPath(pathValue = "") {
 }
 
 function resolveEntryMapPdf(entry) {
+  const mapPdf = String(entry && entry.mapPdf ? entry.mapPdf : "").trim();
+  if (mapPdf) return safeAssetPath(mapPdf);
   const src = String(entry && entry.sourcePdf ? entry.sourcePdf : "").trim();
   if (src && !src.startsWith("manual::")) {
     return `/api/pdf?name=${encodeURIComponent(src)}`;
-  }
-  const mapPdf = String(entry && entry.mapPdf ? entry.mapPdf : "").trim();
-  if (mapPdf) {
-    const parts = mapPdf.replace(/\\/g, "/").split("/").filter(Boolean);
-    const fileName = parts.length ? parts[parts.length - 1] : mapPdf;
-    return `/api/pdf?name=${encodeURIComponent(fileName)}`;
   }
   return "";
 }
