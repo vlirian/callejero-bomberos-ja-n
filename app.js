@@ -190,6 +190,12 @@ function stripRoadPrefix(value = "") {
   return String(value).replace(ROAD_PREFIX_RE, "").replace(/\s{2,}/g, " ").trim();
 }
 
+function streetDedupKey(value = "") {
+  const canonical = canonicalStreetName(String(value || ""));
+  const plain = stripLeadingArticle(stripRoadPrefix(canonical));
+  return normalizeText(plain || canonical);
+}
+
 function stripLeadingArticle(value = "") {
   return String(value)
     .replace(/^(del|de la|de los|de las|de|la|el|los|las)\s+/i, "")
@@ -524,7 +530,7 @@ function getMatches(query) {
   // Evitar calles repetidas en sugerencias (mismo nombre normalizado).
   const uniqueByStreet = new Map();
   for (const entry of ranked) {
-    const key = normalizeText(entry.street);
+    const key = streetDedupKey(entry.street);
     if (!uniqueByStreet.has(key)) {
       uniqueByStreet.set(key, entry);
       continue;
@@ -1378,7 +1384,7 @@ function localIndexSearch(query) {
   const out = [];
   const seen = new Set();
   for (const row of scored) {
-    const key = normalizeText(row.name);
+    const key = streetDedupKey(row.name);
     if (!key || seen.has(key)) continue;
     seen.add(key);
     out.push(row.name);
@@ -1418,11 +1424,11 @@ async function buildSuggestions(query) {
   }));
 
   const indexNames = await fetchStreetIndex(query);
-  const seen = new Set(fromRoutes.map((x) => normalizeText(canonicalStreetName(x.street))));
+  const seen = new Set(fromRoutes.map((x) => streetDedupKey(x.street)));
   const merged = [...fromRoutes];
   for (const name of indexNames) {
     const canonicalName = canonicalStreetName(name);
-    const key = normalizeText(canonicalName);
+    const key = streetDedupKey(canonicalName);
     if (!key || seen.has(key)) continue;
     seen.add(key);
     const routeEntry = findRouteEntryByStreetName(canonicalName);
