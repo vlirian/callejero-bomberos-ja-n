@@ -963,7 +963,7 @@ function renderGoogleMapsRoute(destination, title = "Ruta en Google Maps", zoomO
   if (mapsRouteNote) {
     if (hasFicha) {
       mapsRouteNote.innerHTML =
-        'Este itinerario se ha extraido de google maps, se recomienda concultar la ficha de Chico <a href="#result">aqui</a>.';
+        'Este itinerario se ha extraido de google maps, se recomienda concultar la ficha de Chico <a href="#result" class="suggestion-map-icon" aria-label="Ir a ficha" title="Ir a ficha">🗺️</a>.';
     } else {
       mapsRouteNote.textContent =
         "Este itinerario se ha extraido de google maps, actualmente no dispone de ficha personalizada";
